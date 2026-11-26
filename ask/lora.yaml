@@ -1,4 +1,4 @@
-# Ask Abaci LoRA fine-tune. Run with: make ask-train (about 15-25 minutes on an M-series MacBook, 16 GB).
+# Ask Abaci LoRA fine-tune. Run with: make ask-train (about 45 minutes on an M5 MacBook with 16 GB).
 model: mlx-community/Qwen2.5-Coder-3B-Instruct-4bit   # 4-bit, about 1.7 GB, so training fits in 16 GB
 train: true
 data: ask/data

@@ -1,0 +1,466 @@
+{
+  "base (few-shot)": {
+    "test": {
+      "n": 150,
+      "valid": 0.9066666666666666,
+      "exact": 0.4266666666666667,
+      "execution": 0.6133333333333333,
+      "median_ms": 845.6629170104861,
+      "misses": [
+        {
+          "question": "Which states rank last on pickup over risk-free? Give me 10.",
+          "output": "{\"metrics\":[\"excess_return_vs_treasury\"],\"group_by\":[\"loan__state\"],\"order_by\":[{\"field\":\"excess_return_vs_treasury\",\"desc\":true}],\"limit\":10}",
+          "ms": 1290.6187090557069,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does what a Treasury would have paid vary across sub grade?",
+          "output": "{\"metrics\":[\"priced_spread_over_treasury\"],\"group_by\":[\"loan__sub_grade\"]}",
+          "ms": 849.4401248171926,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Put yield net of losses next to pickup over risk-free, split by risk grade.",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"group_by\":[\"loan__grade\"],\"order_by\":[{\"field\":\"net_annualized_return\",\"desc\":true}],\"limit\":5}",
+          "ms": 1200.7930420804769,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Put percentage of loans that went bad next to share of dollars lost after recoveries, split by vintage year.",
+          "output": "{\"metrics\":[\"net_charge_off_rate\",\"realized_net_profit\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"net_charge_off_rate\",\"desc\":true}],\"limit\":10}",
+          "ms": 1288.8760839123279,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does money we actually made vary across sub grade?",
+          "output": "{\"metrics\":[\"realized_net_profit\"],\"group_by\":[\"loan__sub_grade\"],\"order_by\":[{\"field\":\"realized_net_profit\",\"desc\":true}]}",
+          "ms": 1075.8485421538353,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Put yield net of losses next to pickup over risk-free, split by term length.",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"group_by\":[\"loan__term_months\"],\"order_by\":[{\"field\":\"net_annualized_return\",\"desc\":true}],\"limit\":5}",
+          "ms": 1215.4635000042617,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Which purposes rank last on what a Treasury would have paid? Give me 10.",
+          "output": "{\"metrics\":[\"priced_spread_over_treasury\"],\"group_by\":[\"loan__purpose\"],\"order_by\":[{\"field\":\"priced_spread_over_treasury\",\"desc\":true}],\"limit\":10}",
+          "ms": 1061.8581660091877,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Plot typical APR we charged per vintage year.",
+          "output": "{\"metrics\":[\"priced_spread_over_treasury\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"metric_time__year\",\"desc\":true}]}",
+          "ms": 913.5634158737957,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How about the pickup over risk-free on 60-month loans?",
+          "output": "{\"metrics\":[\"priced_spread_over_treasury\"],\"filters\":[{\"dim\":\"loan__term_months\",\"op\":\"=\",\"value\":60}]}",
+          "ms": 846.1537500843406,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does money we actually made vary across reason for borrowing?",
+          "output": "{\"metrics\":[\"realized_net_profit\"],\"group_by\":[\"loan__purpose\"],\"order_by\":[{\"field\":\"realized_net_profit\",\"desc\":true}]}",
+          "ms": 831.339375115931,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does what a Treasury would have paid vary across risk grade?",
+          "output": "{\"metrics\":[\"priced_spread_over_treasury\"],\"group_by\":[\"loan__grade\"]}",
+          "ms": 646.180541953072,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Put amount we lent next to money we actually made, split by reason for borrowing.",
+          "output": "{\"metrics\":[\"realized_net_profit\"],\"group_by\":[\"loan__purpose\"],\"order_by\":[{\"field\":\"realized_net_profit\",\"desc\":true}]}",
+          "ms": 830.5364579427987,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Put yield net of losses next to pickup over risk-free, split by vintage year.",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"net_annualized_return\",\"desc\":true}],\"limit\":10}",
+          "ms": 957.7467918861657,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "For loans made in CA, how does money we actually made differ by whether they rent or own?",
+          "output": "{\"metrics\":[\"realized_net_profit\"],\"filters\":[{\"dim\":\"loan__state\",\"op\":\"=\",\"value\":\"CA\"},{\"dim\":\"loan__home_ownership\",\"op\":\"in\",\"value\":[\"OWN\",\"RENT\"]}],\"group_by\":[\"loan__home_ownership\"]}",
+          "ms": 1210.2265420835465,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does what a Treasury would have paid vary across whether they rent or own?",
+          "output": "{\"metrics\":[\"treasury_benchmark_return\"],\"filters\":[{\"dim\":\"loan__home_ownership\",\"op\":\"in\",\"value\":[\"RENT\",\"OWN\"]]}]}",
+          "ms": 863.1393751129508,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        }
+      ]
+    },
+    "handwritten": {
+      "n": 30,
+      "valid": 0.7666666666666667,
+      "exact": 0.3333333333333333,
+      "execution": 0.5333333333333333,
+      "median_ms": 779.2037705658004,
+      "misses": [
+        {
+          "question": "Did 60-month loans beat 36-month loans?",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"filters\":[{\"dim\":\"loan__term_months\",\"op\":\"=\",\"value\":60}],\"group_by\":[\"loan__term_months\"],\"order_by\":[{\"field\":\"net_annualized_return\",\"desc\":true}],\"limit\":2}",
+          "ms": 1258.6232081521302,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Which 5 states lost the most to charge-offs as a share of dollars?",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"group_by\":[\"loan__state\"],\"order_by\":[{\"field\":\"charge_off_rate\",\"desc\":true}],\"limit\":5}",
+          "ms": 871.1074159946293,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Are small business loans worth it?",
+          "output": "{\"unsupported\":\"This is a subjective question and cannot be answered with the provided metrics.\"}",
+          "ms": 639.4660419318825,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How many loans did we write in 2015?",
+          "output": "{\"metrics\":[\"loans_issued\"],\"filters\":[{\"dim\":\"metric_time__year\",\"op\":\"=\",\"value\":2015}]}",
+          "ms": 825.8974170312285,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Is our pricing keeping up with losses by grade?",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"filters\":[{\"dim\":\"loan__grade\",\"op\":\"=\",\"value\":\"A\"}]}",
+          "ms": 773.3440001029521,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "return vs treasury by vintage",
+          "output": "{\"metrics\":[\"excess_return_vs_treasury\"],\"group_by\":[\"loan__vintage_year\"]}",
+          "ms": 671.2095001712441,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Does verifying income reduce losses?",
+          "output": "{\"metrics\":[\"net_charge_off_rate\"],\"filters\":[{\"dim\":\"application__verification_status\",\"op\":\"=\",\"value\":\"Verified\"}]}",
+          "ms": 767.828790936619,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "What's the worst sub-grade for returns?",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"group_by\":[\"loan__sub_grade\"],\"order_by\":[{\"field\":\"net_annualized_return\",\"desc\":true}],\"limit\":1}",
+          "ms": 949.7129160445184,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How did the 2016 vintage do by grade?",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"filters\":[{\"dim\":\"metric_time__year\",\"op\":\"=\",\"value\":2016}],\"group_by\":[\"loan__grade\"]}",
+          "ms": 949.4347919244319,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "For borrowers with FICO 720 and up, what was the default rate?",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"filters\":[{\"dim\":\"loan__fico_band\",\"op\":\"in\",\"value\":\"720+\"}]}",
+          "ms": 821.3064998853952,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Applications by state",
+          "output": "{\"metrics\":[\"applications\"],\"group_by\":[\"loan__state\"]}",
+          "ms": 538.2964999880642,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "What's the excess return on grade E and F loans by term?",
+          "output": "{\"metrics\":[\"excess_return_vs_treasury\"],\"filters\":[{\"dim\":\"loan__grade\",\"op\":\"in\",\"value\":[\"E\",\"F\"]},{\"dim\":\"loan__term_months\",\"op\":\"in\",\"value\":[36,60]}]}",
+          "ms": 1165.8987500704825,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Show me the names of borrowers who defaulted in Nevada",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"filters\":[{\"dim\":\"loan__state\",\"op\":\"=\",\"value\":\"NV\"},{\"dim\":\"application__decision\",\"op\":\"=\",\"value\":\"rejected\"}],\"group_by\":[\"application__borrower_name\"]}",
+          "ms": 1112.5892919953912,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Forecast originations for 2020",
+          "output": "{\"metrics\":[\"originations\"],\"filters\":[{\"dim\":\"metric_time__year\",\"op\":\"=\",\"value\":2020}]}",
+          "ms": 785.0635410286486,
+          "valid": false,
+          "exact": false,
+          "execution": false
+        }
+      ]
+    }
+  },
+  "fine-tuned": {
+    "test": {
+      "n": 150,
+      "valid": 0.98,
+      "exact": 0.78,
+      "execution": 0.7866666666666666,
+      "median_ms": 860.1878336630762,
+      "misses": [
+        {
+          "question": "Which states rank last on pickup over risk-free? Give me 10.",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"group_by\":[\"loan__state\"],\"order_by\":[{\"field\":\"charge_off_rate\",\"desc\":false}],\"limit\":10}",
+          "ms": 942.4473750405014,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does premium we priced above Treasuries vary across risk grade?",
+          "output": "{\"metrics\":[\"excess_return_vs_treasury\"],\"group_by\":[\"loan__grade\"]}",
+          "ms": 660.2725838311017,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Plot money we actually made per vintage year.",
+          "output": "{\"metrics\":[\"originations\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"metric_time__year\",\"desc\":false}]}",
+          "ms": 862.9797499161214,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does money we actually made vary across sub grade?",
+          "output": "{\"metrics\":[\"originations\"],\"group_by\":[\"loan__sub_grade\"]}",
+          "ms": 591.3357499521226,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does premium we priced above Treasuries vary across sub grade?",
+          "output": "{\"metrics\":[\"excess_return_vs_treasury\"],\"group_by\":[\"loan__sub_grade\"]}",
+          "ms": 679.7923338599503,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does money we actually made vary across reason for borrowing?",
+          "output": "{\"metrics\":[\"originations\"],\"group_by\":[\"loan__purpose\"]}",
+          "ms": 574.5185841806233,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does pickup over risk-free vary across FICO bucket?",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"group_by\":[\"loan__fico_band\"]}",
+          "ms": 633.3074169233441,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "For loans made in CA, how does money we actually made differ by whether they rent or own?",
+          "output": "{\"metrics\":[\"originations\"],\"group_by\":[\"loan__home_ownership\"],\"filters\":[{\"dim\":\"loan__state\",\"op\":\"=\",\"value\":\"CA\"}]}",
+          "ms": 918.8061668537557,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Rank FICO bands by premium we priced above Treasuries and give me the top 3.",
+          "output": "{\"metrics\":[\"excess_return_vs_treasury\"],\"group_by\":[\"loan__fico_band\"],\"order_by\":[{\"field\":\"excess_return_vs_treasury\",\"desc\":true}],\"limit\":3}",
+          "ms": 1107.0890831761062,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "For loans taken for debt consolidation, how does money we actually made differ by whether they rent or own?",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"group_by\":[\"loan__home_ownership\"],\"filters\":[{\"dim\":\"loan__purpose\",\"op\":\"=\",\"value\":\"debt_consolidation\"}]}",
+          "ms": 1045.851374976337,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Rank grades by pickup over risk-free and give me the top 3.",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"group_by\":[\"loan__grade\"],\"order_by\":[{\"field\":\"charge_off_rate\",\"desc\":true}],\"limit\":3}",
+          "ms": 918.7051660846919,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Plot yield net of losses per vintage year.",
+          "output": "{\"metrics\":[\"weighted_avg_interest_rate\",\"net_charge_off_rate\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"metric_time__year\",\"desc\":false}]}",
+          "ms": 994.1755831241608,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "For loans made in NV, how does yield net of losses differ by reason for borrowing?",
+          "output": "{\"metrics\":[\"net_annualized_return\",\"net_charge_off_rate\"],\"group_by\":[\"loan__purpose\"],\"filters\":[{\"dim\":\"loan__state\",\"op\":\"=\",\"value\":\"NV\"}]}",
+          "ms": 1031.7000409122556,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "How does pickup over risk-free vary across sub grade?",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"group_by\":[\"loan__sub_grade\"]}",
+          "ms": 610.3054999839514,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Which sub-grades rank last on money we actually made? Give me 3.",
+          "output": "{\"metrics\":[\"originations\"],\"group_by\":[\"loan__sub_grade\"],\"order_by\":[{\"field\":\"originations\",\"desc\":false}],\"limit\":3}",
+          "ms": 905.7366251945496,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        }
+      ]
+    },
+    "handwritten": {
+      "n": 30,
+      "valid": 1.0,
+      "exact": 0.7,
+      "execution": 0.7,
+      "median_ms": 850.871437927708,
+      "misses": [
+        {
+          "question": "Which grade made us the most money per dollar lent?",
+          "output": "{\"metrics\":[\"realized_net_profit\"],\"group_by\":[\"loan__grade\"]}",
+          "ms": 609.961667098105,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Did 60-month loans beat 36-month loans?",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"filters\":[{\"dim\":\"loan__term_months\",\"op\":\"=\",\"value\":60}]}",
+          "ms": 810.1662921253592,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Which 5 states lost the most to charge-offs as a share of dollars?",
+          "output": "{\"metrics\":[\"charge_off_rate\"],\"group_by\":[\"loan__state\"],\"order_by\":[{\"field\":\"charge_off_rate\",\"desc\":true}],\"limit\":5}",
+          "ms": 922.2732910420746,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "monthly loan volume",
+          "output": "{\"metrics\":[\"loans_issued\"],\"group_by\":[\"metric_time__month\"],\"order_by\":[{\"field\":\"metric_time__month\",\"desc\":false}]}",
+          "ms": 898.9847910124809,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "return vs treasury by vintage",
+          "output": "{\"metrics\":[\"net_annualized_return\",\"excess_return_vs_treasury\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"metric_time__year\",\"desc\":false}]}",
+          "ms": 1065.6492088455707,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Does verifying income reduce losses?",
+          "output": "{\"metrics\":[\"net_charge_off_rate\"],\"filters\":[{\"dim\":\"loan__verification_status\",\"op\":\"=\",\"value\":\"Verified\"}]}",
+          "ms": 809.0063747949898,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "What's the worst sub-grade for returns?",
+          "output": "{\"metrics\":[\"net_annualized_return\"],\"group_by\":[\"loan__sub_grade\"],\"order_by\":[{\"field\":\"net_annualized_return\",\"desc\":false}]}",
+          "ms": 936.108874855563,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "Forecast originations for 2020",
+          "output": "{\"metrics\":[\"originations\"],\"group_by\":[\"metric_time__year\"],\"order_by\":[{\"field\":\"metric_time__year\",\"desc\":false}]}",
+          "ms": 879.5499999541789,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        },
+        {
+          "question": "UPDATE fct_loans SET grade = 'A'",
+          "output": "{\"metrics\":[\"loans_issued\"],\"filters\":[{\"dim\":\"loan__grade\",\"op\":\"=\",\"value\":\"A\"}]}",
+          "ms": 798.7214170861989,
+          "valid": true,
+          "exact": false,
+          "execution": false
+        }
+      ]
+    }
+  }
+}

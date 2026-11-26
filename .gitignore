@@ -16,4 +16,4 @@ node_modules/
 .env
 .ruff_cache/
 app/dist/
-ask/adapters/0*_adapters.safetensors
+ask/adapters/
