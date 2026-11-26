@@ -1,0 +1,166 @@
+version: 2
+
+# Marts are the public, contract-enforced interface. The semantic layer, dashboards and the local
+# AI analyst read only from here. Renaming a column or changing its type fails the build until the
+# contract below changes with it.
+
+models:
+  - name: fct_loans
+    description: One row per Abaci loan with realized economics and its matched Treasury benchmark.
+    columns:
+      - name: loan_id
+        data_type: bigint
+        description: "Abaci loan id (the Lending Club loan id)."
+        constraints: [{type: primary_key}, {type: not_null}]
+        data_tests: [unique, not_null]
+      - name: issue_date
+        data_type: date
+        description: "Date the loan was funded (first of the issue month in the source)."
+        data_tests: [not_null]
+      - name: issue_month
+        data_type: date
+      - name: vintage_year
+        data_type: bigint
+      - name: vintage_quarter
+        data_type: varchar
+        description: "For example 2015-Q4."
+      - name: grade
+        data_type: varchar
+        description: "Credit grade A (best) to G."
+        data_tests: [not_null, {accepted_values: {arguments: {values: [A, B, C, D, E, F, G]}}}]
+      - name: sub_grade
+        data_type: varchar
+        description: "A1 to G5."
+      - name: term_months
+        data_type: integer
+        description: "36 or 60."
+        data_tests: [{accepted_values: {arguments: {values: [36, 60]}}}]
+      - name: purpose
+        data_type: varchar
+      - name: state
+        data_type: varchar
+        description: "Borrower state."
+      - name: home_ownership
+        data_type: varchar
+      - name: verification_status
+        data_type: varchar
+      - name: employment_length
+        data_type: varchar
+      - name: fico_band
+        data_type: varchar
+        description: "FICO band from the low end of the reported range."
+        data_tests: [{accepted_values: {arguments: {values: ['<640', '640-679', '680-719', '720-759', '760+']}}}]
+      - name: fico_low
+        data_type: integer
+        data_tests: [{abaci_in_range: {arguments: {min_value: 300, max_value: 850}}}]
+      - name: fico_high
+        data_type: integer
+      - name: dti
+        data_type: double
+        description: "Debt-to-income ratio, percent."
+        data_tests: [{abaci_in_range: {arguments: {min_value: 0, max_value: 1000}, config: {severity: warn}}}]
+      - name: annual_income
+        data_type: double
+      - name: loan_status
+        data_type: varchar
+        description: "Normalized status."
+        data_tests: [{accepted_values: {arguments: {values: [Fully Paid, Charged Off, Default, Late, In Grace Period, Current, Other]}}}]
+      - name: is_outside_credit_policy
+        data_type: boolean
+        description: "Loan issued under an older credit policy (source status prefixed 'Does not meet the credit policy')."
+      - name: is_resolved
+        data_type: boolean
+        description: "Fully Paid or Charged Off, so the outcome is final."
+      - name: is_charged_off
+        data_type: boolean
+      - name: is_mature
+        data_type: boolean
+        description: "The full term elapsed before the data cut-off, so the vintage is not biased toward early outcomes."
+      - name: is_rate_inconsistent
+        data_type: boolean
+        description: "The installment is more than 5% off the payment the stated rate implies: the source overwrote the rate on some modified loans."
+      - name: is_recovery_driven
+        data_type: boolean
+        description: "Charged off, with more cash from post-charge-off recoveries than from payments. No per-loan annualized return."
+      - name: loan_amount
+        data_type: double
+        description: "Amount requested, USD."
+      - name: funded_amount
+        data_type: double
+        description: "Amount funded, USD."
+        data_tests: [not_null, {abaci_in_range: {arguments: {min_value: 500, max_value: 40000}}}]
+      - name: interest_rate
+        data_type: double
+        description: "Annual rate as a decimal (0.1399 = 13.99%)."
+        data_tests: [not_null, {abaci_in_range: {arguments: {min_value: 0.03, max_value: 0.35}}}]
+      - name: installment
+        data_type: double
+        description: "Monthly payment, USD."
+      - name: total_payments
+        data_type: double
+        description: "All cash received, including recoveries, USD."
+      - name: principal_received
+        data_type: double
+      - name: interest_received
+        data_type: double
+      - name: late_fees_received
+        data_type: double
+      - name: recoveries
+        data_type: double
+        description: "Cash recovered after charge-off, USD."
+      - name: collection_fees
+        data_type: double
+        description: "Fees paid to collect recoveries, USD."
+      - name: net_cash_received
+        data_type: double
+        description: "Total payments minus collection fees, USD."
+      - name: net_charge_off_amount
+        data_type: double
+        description: "Principal lost on a charged-off loan, net of recoveries and collection fees, USD."
+        data_tests: [{abaci_in_range: {arguments: {min_value: 0, max_value: 40000}}}]
+      - name: last_payment_date
+        data_type: date
+      - name: months_outstanding
+        data_type: bigint
+      - name: principal_years_outstanding
+        data_type: double
+        description: "Dollar exposure over time (balance x years). Denominator for portfolio returns."
+        data_tests: [not_null, {abaci_in_range: {arguments: {min_value: 0, max_value: 200000}}}]
+      - name: treasury_yield_at_issue
+        data_type: double
+        description: "Matched-term Treasury yield in the issue month (3-year for 36-month loans, 5-year for 60-month), decimal."
+        data_tests: [not_null, {abaci_in_range: {arguments: {min_value: 0, max_value: 0.2}}}]
+      - name: fed_funds_at_issue
+        data_type: double
+      - name: unemployment_at_issue
+        data_type: double
+      - name: priced_spread
+        data_type: double
+        description: "Interest rate minus the matched Treasury yield at issue."
+      - name: realized_net_profit
+        data_type: double
+        description: "Net cash received minus funded amount, resolved loans only, USD."
+      - name: realized_total_return
+        data_type: double
+        description: "Realized net profit / funded amount, resolved loans only."
+      - name: realized_annual_return
+        data_type: double
+        description: "Per-loan annualized return, resolved loans only. For single-loan lookups; portfolio returns use principal-years."
+        data_tests: [{abaci_in_range: {arguments: {min_value: -1, max_value: 1}}}]
+      - name: excess_return_vs_treasury
+        data_type: double
+        description: "Per-loan annualized return minus the matched Treasury yield, resolved loans only."
+
+  - name: fct_applications
+    description: Every application, approved or rejected, for funnel and approval-rate analysis.
+    columns:
+      - name: decision
+        data_type: varchar
+        data_tests: [not_null, {accepted_values: {arguments: {values: [approved, rejected]}}}]
+      - name: application_date
+        data_type: date
+        data_tests: [not_null]
+      - {name: amount_requested, data_type: double}
+      - {name: risk_score, data_type: double, description: FICO-style score (midpoint of the FICO range for approved loans).}
+      - {name: dti, data_type: double}
+      - {name: state, data_type: varchar}

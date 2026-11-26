@@ -1,0 +1,6 @@
+[project]
+name = "abaci"
+version = "0.1.0"
+description = "BI stack for Abaci, a fictional consumer lender: dbt + DuckDB, a MetricFlow semantic layer, React dashboards and a local MLX analyst."
+requires-python = ">=3.12"
+# Dependencies are pinned in requirements.txt (make setup).

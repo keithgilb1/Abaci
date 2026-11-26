@@ -87,6 +87,13 @@ Every check runs on every PR in GitHub Actions and writes [`DATA_QUALITY.md`](DA
 - **Parity**: the dashboard path (`mf query --saved-query`), the Python engine the AI analyst uses, and an independent pandas re-implementation from the raw CSVs that shares no code with dbt must agree on every metric for every grade, to 1e-9.
 - **Proof the checks bite**: breaking a staging filter so it silently drops loans fails both reconciliation tests.
 
+### What the checks found in the real data
+
+- **Stated rate does not fit the installment (331 loans).** On some modified loans the source overwrote the stated rate, often to exactly 6.00%, so the installment implies a different rate. Dividing interest by the wrong rate overstated exposure (322,950 principal-years on a $33,575 loan), so these loans are flagged (`is_rate_inconsistent`) and their principal-years are capped at funded amount x term. A warn-level test keeps the count visible on every build.
+- **Charge-offs repaid mostly by recoveries (21,285 loans).** For these loans, post-charge-off recoveries brought in more than the payments did, and there is no date for that cash. Annualizing over the one- or two-month holding period this implies compounded returns to over 1,000,000%. They get no per-loan annualized return (`is_recovery_driven`), and portfolio returns still count their cash.
+- **DTI of -1 (2 loans).** The source codes a missing debt-to-income ratio as -1, so staging treats it as missing.
+- **Summary lines dropped (33).** The accepted-loans file includes 33 "Total amount funded in policy code" summary lines that are not loans. Staging drops them by rule, and the reconciliation accounts for each one.
+
 ## Layout
 
 ```

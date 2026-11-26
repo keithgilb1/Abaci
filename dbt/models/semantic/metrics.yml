@@ -1,0 +1,104 @@
+version: 2
+
+metrics:
+  # ---- Volume ----
+  - name: loans_issued
+    label: Loans issued
+    description: Number of loans funded, by issue date.
+    type: simple
+    type_params: {measure: loans_issued}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: originations
+    label: Originations
+    description: Dollars funded, USD, by issue date.
+    type: simple
+    type_params: {measure: originations}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: approval_rate
+    label: Approval rate
+    description: Approved applications / all applications.
+    type: ratio
+    type_params: {numerator: approved_applications, denominator: applications}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  # ---- Pricing ----
+  - name: weighted_avg_interest_rate
+    label: Weighted average interest rate
+    description: Interest rate weighted by dollars funded.
+    type: ratio
+    type_params: {numerator: rate_x_funded, denominator: originations}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: priced_spread_over_treasury
+    label: Priced spread over Treasury
+    description: Interest rate minus the matched-term Treasury yield at issue, weighted by dollars funded. What Abaci charged for credit risk.
+    type: ratio
+    type_params: {numerator: spread_x_funded, denominator: originations}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  # ---- Losses ----
+  - name: charge_off_rate
+    label: Charge-off rate (count)
+    description: Charged-off loans / resolved loans (Fully Paid or Charged Off).
+    type: ratio
+    type_params: {numerator: charged_off_loans, denominator: resolved_loans}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: net_charge_off_rate
+    label: Net charge-off rate (dollars)
+    description: Principal lost net of recoveries and collection fees / dollars funded on resolved loans. Lifetime, not annualized.
+    type: ratio
+    type_params: {numerator: net_charge_offs, denominator: resolved_funded}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  # ---- Returns ----
+  - name: realized_net_profit
+    label: Realized net profit
+    description: Net cash received minus dollars funded, resolved loans only, USD.
+    type: simple
+    type_params: {measure: realized_net_profit}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: net_annualized_return
+    label: Net annualized return
+    description: >
+      Realized net profit / principal-years outstanding on resolved loans. The dollar-weighted annual
+      return Abaci actually earned after losses. Read it on mature vintages (loan__is_mature = true):
+      younger vintages have resolved early, which skews toward defaults and prepayments.
+    type: ratio
+    type_params: {numerator: realized_net_profit, denominator: resolved_principal_years}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: treasury_benchmark_return
+    label: Treasury benchmark return
+    description: The matched-term Treasury yield the same dollars would have earned risk-free, weighted by principal-years.
+    type: ratio
+    type_params: {numerator: treasury_x_resolved_principal_years, denominator: resolved_principal_years}
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  - name: excess_return_vs_treasury
+    label: Excess return vs Treasury
+    description: Net annualized return minus the Treasury benchmark return. What Abaci was actually paid for taking credit risk.
+    type: derived
+    type_params:
+      expr: net_annualized_return - treasury_benchmark_return
+      metrics:
+        - name: net_annualized_return
+        - name: treasury_benchmark_return
+    config: {meta: {owner: Credit Analytics, certified: true}}
+
+  # ---- Building blocks ----
+  # Ratio metrics are built from metrics, so each numerator and denominator is exposed as a simple
+  # metric. They are labeled as components; dashboards and the AI analyst use the metrics above.
+  - {name: applications, label: Applications, description: All applications., type: simple, type_params: {measure: applications}, config: {meta: {owner: Credit Analytics, certified: true}}}
+  - {name: approved_applications, label: Approved applications, description: Applications that were funded., type: simple, type_params: {measure: approved_applications}, config: {meta: {owner: Credit Analytics, certified: true}}}
+  - {name: resolved_loans, label: Resolved loans, description: Loans Fully Paid or Charged Off., type: simple, type_params: {measure: resolved_loans}, config: {meta: {owner: Credit Analytics, certified: true}}}
+  - {name: charged_off_loans, label: Charged-off loans, description: Loans charged off., type: simple, type_params: {measure: charged_off_loans}, config: {meta: {owner: Credit Analytics, certified: true}}}
+  - {name: net_charge_offs, label: Net charge-offs, description: Principal lost net of recoveries and collection fees (USD)., type: simple, type_params: {measure: net_charge_offs}, config: {meta: {owner: Credit Analytics, certified: true}}}
+  - {name: resolved_funded, label: Resolved funded, description: "Component: dollars funded on resolved loans.", type: simple, type_params: {measure: resolved_funded}, config: {meta: {owner: Credit Analytics, component: true}}}
+  - {name: rate_x_funded, label: Rate x funded, description: "Component of weighted_avg_interest_rate.", type: simple, type_params: {measure: rate_x_funded}, config: {meta: {owner: Credit Analytics, component: true}}}
+  - {name: spread_x_funded, label: Spread x funded, description: "Component of priced_spread_over_treasury.", type: simple, type_params: {measure: spread_x_funded}, config: {meta: {owner: Credit Analytics, component: true}}}
+  - {name: resolved_principal_years, label: Resolved principal-years, description: "Component: dollar-years of exposure on resolved loans.", type: simple, type_params: {measure: resolved_principal_years}, config: {meta: {owner: Credit Analytics, component: true}}}
+  - {name: treasury_x_resolved_principal_years, label: Treasury x principal-years, description: "Component of treasury_benchmark_return.", type: simple, type_params: {measure: treasury_x_resolved_principal_years}, config: {meta: {owner: Credit Analytics, component: true}}}

@@ -1,0 +1,56 @@
+version: 2
+
+# The governed semantic layer. Every measure and metric is defined once, here. The React dashboards,
+# the credit policy lab and the local AI analyst all ask MetricFlow for metrics by name, so a number
+# like "net charge-off rate" means the same thing on every screen.
+
+semantic_models:
+  - name: loans
+    description: The Abaci loan book at loan grain.
+    model: ref('fct_loans')
+    defaults:
+      agg_time_dimension: issue_date
+    entities:
+      - {name: loan, type: primary, expr: loan_id}
+    dimensions:
+      - {name: issue_date, type: time, type_params: {time_granularity: day}}
+      - {name: grade, type: categorical}
+      - {name: sub_grade, type: categorical}
+      - {name: term_months, type: categorical}
+      - {name: purpose, type: categorical}
+      - {name: state, type: categorical}
+      - {name: fico_band, type: categorical}
+      - {name: home_ownership, type: categorical}
+      - {name: verification_status, type: categorical}
+      - {name: loan_status, type: categorical}
+      - {name: vintage_year, type: categorical}
+      - {name: is_resolved, type: categorical}
+      - {name: is_mature, type: categorical}
+      - {name: is_charged_off, type: categorical}
+    measures:
+      - {name: loans_issued, agg: count, expr: loan_id, description: Number of loans funded.}
+      - {name: originations, agg: sum, expr: funded_amount, description: Dollars funded.}
+      - {name: rate_x_funded, agg: sum, expr: interest_rate * funded_amount, description: Rate weighted by dollars funded (numerator for the weighted rate).}
+      - {name: spread_x_funded, agg: sum, expr: priced_spread * funded_amount, description: Priced spread over Treasuries weighted by dollars funded.}
+      - {name: resolved_loans, agg: sum, expr: "case when is_resolved then 1 else 0 end"}
+      - {name: charged_off_loans, agg: sum, expr: "case when is_charged_off then 1 else 0 end"}
+      - {name: resolved_funded, agg: sum, expr: "case when is_resolved then funded_amount else 0 end", description: Dollars funded on loans whose outcome is final.}
+      - {name: net_charge_offs, agg: sum, expr: net_charge_off_amount, description: Principal lost net of recoveries and collection fees.}
+      - {name: interest_income, agg: sum, expr: interest_received}
+      - {name: realized_net_profit, agg: sum, expr: "coalesce(realized_net_profit, 0)", description: "Net cash received minus funded, resolved loans only."}
+      - {name: resolved_principal_years, agg: sum, expr: "case when is_resolved then principal_years_outstanding else 0 end", description: Dollar-years of exposure on resolved loans.}
+      - {name: treasury_x_resolved_principal_years, agg: sum, expr: "case when is_resolved then treasury_yield_at_issue * principal_years_outstanding else 0 end"}
+
+  - name: applications
+    description: Every application, approved or rejected.
+    model: ref('fct_applications')
+    defaults:
+      agg_time_dimension: application_date
+    primary_entity: application
+    dimensions:
+      - {name: application_date, type: time, type_params: {time_granularity: day}}
+      - {name: decision, type: categorical}
+      - {name: state, type: categorical}
+    measures:
+      - {name: applications, agg: sum, expr: "1"}
+      - {name: approved_applications, agg: sum, expr: "case when decision = 'approved' then 1 else 0 end"}

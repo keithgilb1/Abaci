@@ -1,0 +1,89 @@
+version: 2
+
+# Unit tests for the business rules in fct_loans, on hand-made rows (no real data needed).
+unit_tests:
+  - name: treasury_benchmark_matches_loan_term
+    description: A 36-month loan is benchmarked to the 3-year Treasury and a 60-month loan to the 5-year, in the issue month.
+    model: fct_loans
+    given:
+      - input: ref('stg_loans')
+        rows:
+          - {loan_id: 1, issue_date: 2015-06-01, term_months: 36, funded_amount: 10000, interest_rate: 0.12, loan_status: Current, interest_received: 600, total_payments: 1500, principal_received: 900, recoveries: 0, collection_fees: 0, late_fees_received: 0, fico_low: 700}
+          - {loan_id: 2, issue_date: 2015-06-01, term_months: 60, funded_amount: 10000, interest_rate: 0.15, loan_status: Current, interest_received: 750, total_payments: 1200, principal_received: 450, recoveries: 0, collection_fees: 0, late_fees_received: 0, fico_low: 700}
+      - input: ref('int_rates_monthly')
+        rows:
+          - {month_start: 2015-06-01, treasury_3y_yield: 0.0100, treasury_5y_yield: 0.0165, fed_funds_rate: 0.0013, unemployment_rate: 0.053}
+    expect:
+      rows:
+        - {loan_id: 1, treasury_yield_at_issue: 0.0100, priced_spread: 0.11, realized_annual_return: null}
+        - {loan_id: 2, treasury_yield_at_issue: 0.0165, priced_spread: 0.1335, realized_annual_return: null}
+
+  - name: charge_off_loss_is_net_of_recoveries_and_fees
+    description: >
+      A $10,000 loan that repaid $2,000 of principal before charge-off and recovered $1,000 (paying $180 to
+      collect it) loses 10,000 - 2,000 - (1,000 - 180) = $7,180 of principal. Fully paid loans lose nothing.
+    model: fct_loans
+    given:
+      - input: ref('stg_loans')
+        rows:
+          - {loan_id: 1, issue_date: 2013-01-01, term_months: 36, funded_amount: 10000, interest_rate: 0.15, loan_status: Charged Off, principal_received: 2000, interest_received: 1500, late_fees_received: 0, recoveries: 1000, collection_fees: 180, total_payments: 4500, last_payment_date: 2014-03-01, fico_low: 690}
+          - {loan_id: 2, issue_date: 2013-01-01, term_months: 36, funded_amount: 10000, interest_rate: 0.10, loan_status: Fully Paid, principal_received: 10000, interest_received: 1600, late_fees_received: 0, recoveries: 0, collection_fees: 0, total_payments: 11600, last_payment_date: 2016-01-01, fico_low: 750}
+      - input: ref('int_rates_monthly')
+        rows:
+          - {month_start: 2013-01-01, treasury_3y_yield: 0.0040, treasury_5y_yield: 0.0080}
+    expect:
+      rows:
+        - {loan_id: 1, is_charged_off: true, net_charge_off_amount: 7180, net_cash_received: 4320, realized_net_profit: -5680, principal_years_outstanding: 10000}
+        - {loan_id: 2, is_charged_off: false, net_charge_off_amount: 0, net_cash_received: 11600, realized_net_profit: 1600, principal_years_outstanding: 16000}
+
+  - name: maturity_uses_the_full_term_and_data_cutoff
+    description: A loan is mature only when issue date plus its full term is on or before the data cut-off (2019-03-31).
+    model: fct_loans
+    given:
+      - input: ref('stg_loans')
+        rows:
+          - {loan_id: 1, issue_date: 2016-03-01, term_months: 36, funded_amount: 5000, interest_rate: 0.1, loan_status: Fully Paid, interest_received: 700, fico_low: 700}
+          - {loan_id: 2, issue_date: 2016-04-01, term_months: 36, funded_amount: 5000, interest_rate: 0.1, loan_status: Fully Paid, interest_received: 700, fico_low: 700}
+          - {loan_id: 3, issue_date: 2014-03-01, term_months: 60, funded_amount: 5000, interest_rate: 0.1, loan_status: Fully Paid, interest_received: 700, fico_low: 700}
+      - input: ref('int_rates_monthly')
+        rows:
+          - {month_start: 2016-03-01, treasury_3y_yield: 0.01, treasury_5y_yield: 0.014}
+    expect:
+      rows:
+        - {loan_id: 1, is_mature: true}
+        - {loan_id: 2, is_mature: false}
+        - {loan_id: 3, is_mature: true}
+
+  - name: exposure_is_capped_when_the_stated_rate_is_wrong
+    description: >
+      Loan 1 has a stated 6% rate but a payment that fits about 11%, so interest / rate overstates exposure.
+      Principal-years is capped at funded x term (35,000 x 5 = 175,000) and the loan is flagged. Loan 2's rate fits its payment.
+    model: fct_loans
+    given:
+      - input: ref('stg_loans')
+        rows:
+          - {loan_id: 1, issue_date: 2016-01-01, term_months: 60, funded_amount: 35000, interest_rate: 0.06, installment: 766.76, loan_status: Charged Off, interest_received: 17287, principal_received: 9000, recoveries: 0, collection_fees: 0, fico_low: 680}
+          - {loan_id: 2, issue_date: 2016-01-01, term_months: 36, funded_amount: 10000, interest_rate: 0.10, installment: 322.67, loan_status: Fully Paid, interest_received: 1600, principal_received: 10000, recoveries: 0, collection_fees: 0, fico_low: 720}
+      - input: ref('int_rates_monthly')
+        rows:
+          - {month_start: 2016-01-01, treasury_3y_yield: 0.012, treasury_5y_yield: 0.016}
+    expect:
+      rows:
+        - {loan_id: 1, principal_years_outstanding: 175000, is_rate_inconsistent: true}
+        - {loan_id: 2, principal_years_outstanding: 16000, is_rate_inconsistent: false}
+
+  - name: recovery_driven_loans_get_no_annualized_return
+    description: >
+      A loan that paid nothing and recovered more than it lent (cash all from recoveries) has no meaningful
+      holding period, so its per-loan annualized return is null rather than a compounded 1,000,000%.
+    model: fct_loans
+    given:
+      - input: ref('stg_loans')
+        rows:
+          - {loan_id: 1, issue_date: 2016-09-01, term_months: 36, funded_amount: 10800, interest_rate: 0.12, installment: 358.72, loan_status: Charged Off, principal_received: 0, interest_received: 0, recoveries: 23439, collection_fees: 0, total_payments: 23439, last_payment_date: null, fico_low: 700}
+      - input: ref('int_rates_monthly')
+        rows:
+          - {month_start: 2016-09-01, treasury_3y_yield: 0.009, treasury_5y_yield: 0.012}
+    expect:
+      rows:
+        - {loan_id: 1, is_recovery_driven: true, realized_annual_return: null, excess_return_vs_treasury: null, realized_net_profit: 12639}

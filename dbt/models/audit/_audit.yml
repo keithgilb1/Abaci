@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: audit_rate_outliers
+    description: >
+      Pricing audit. Each loan's rate scored against loans in the same sub-grade, term and issue month
+      with a robust (median/MAD) z-score. Flags |z| > 3.5. A warn-level test reports flags on every
+      build without failing it.
+    columns:
+      - name: loan_id
+        data_tests: [unique, not_null]
+      - name: is_flagged
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [false]
+              config:
+                severity: warn

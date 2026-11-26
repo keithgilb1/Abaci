@@ -1,0 +1,46 @@
+name: abaci
+version: "1.0.0"
+config-version: 2
+profile: abaci
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages", "logs"]
+
+vars:
+  # Last month of cash flows in the Lending Club extract. A loan is "mature" when its full term
+  # has elapsed by this date, so its outcome is no longer biased toward early defaults.
+  data_as_of: "2019-03-31"
+
+models:
+  abaci:
+    staging:
+      +materialized: view
+      +schema: staging
+      +group: data_platform
+      +access: protected
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+      +group: data_platform
+      +access: protected
+    marts:
+      +materialized: table
+      +schema: marts
+      +group: credit_analytics
+      +access: public
+      +contract:
+        enforced: true
+    semantic:
+      +materialized: table
+      +schema: marts
+    audit:
+      +materialized: table
+      +schema: audit
+      +group: data_platform
+
+data_tests:
+  abaci:
+    +store_failures: false

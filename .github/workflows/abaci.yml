@@ -1,0 +1,75 @@
+name: abaci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: abaci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DBT_SEND_ANONYMOUS_USAGE_STATS: "false"
+      # CI runs on the synthetic sample: the real Lending Club data never goes in git.
+      ABACI_RAW_DIR: ${{ github.workspace }}/data/sample
+      ABACI_DB: ${{ github.workspace }}/data/sample.duckdb
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: make lint
+
+      - name: Generate the synthetic sample (seed 42)
+        run: make sample-data
+
+      - name: Load raw files into DuckDB
+        run: make load
+
+      - name: dbt build (models, contracts, data tests, unit tests, reconciliation, PII scan)
+        run: make build
+
+      - name: Validate the semantic layer
+        run: make validate
+
+      - name: Ingest and metric parity tests
+        run: make test
+
+      - name: Data quality report
+        if: always()
+        run: |
+          make report
+          cat DATA_QUALITY.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build dbt docs
+        run: make docs
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: abaci-build
+          path: |
+            DATA_QUALITY.md
+            dbt/target/index.html
+            dbt/target/manifest.json
+            dbt/target/catalog.json
+            dbt/target/semantic_manifest.json
+            dbt/target/run_results.json
+          retention-days: 14

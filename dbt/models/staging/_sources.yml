@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Source files loaded as text by ingest/load_raw.py.
+    tables:
+      - name: lc_accepted
+        description: Lending Club accepted loans, 2007 to 2018 Q4 (Kaggle, wordsforthewise/lending-club). Relabeled as the Abaci loan book.
+      - name: lc_rejected
+        description: Lending Club rejected applications, 2007 to 2018 Q4.
+      - name: fred_series
+        description: FRED series DGS3, DGS5, FEDFUNDS and UNRATE in long format.
