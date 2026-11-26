@@ -27,6 +27,11 @@ semantic_models:
       - {name: is_resolved, type: categorical}
       - {name: is_mature, type: categorical}
       - {name: is_charged_off, type: categorical}
+      # Numeric attributes the credit policy lab filters on (e.g. fico_low >= 700). Filter-only:
+      # grouping by them would return one row per distinct value.
+      - {name: fico_low, type: categorical, description: Lower bound of the FICO range at application.}
+      - {name: dti, type: categorical, description: Debt-to-income ratio at application (percent).}
+      - {name: annual_income, type: categorical, description: Stated annual income (USD).}
     measures:
       - {name: loans_issued, agg: count, expr: loan_id, description: Number of loans funded.}
       - {name: originations, agg: sum, expr: funded_amount, description: Dollars funded.}
@@ -51,6 +56,8 @@ semantic_models:
       - {name: application_date, type: time, type_params: {time_granularity: day}}
       - {name: decision, type: categorical}
       - {name: state, type: categorical}
+      - {name: risk_score, type: categorical, description: "Credit score on the application (FICO for approved loans; the rejected file mixes FICO and VantageScore after 2013)."}
+      - {name: dti, type: categorical, description: Debt-to-income ratio on the application (percent).}
     measures:
       - {name: applications, agg: sum, expr: "1"}
       - {name: approved_applications, agg: sum, expr: "case when decision = 'approved' then 1 else 0 end"}

@@ -20,7 +20,7 @@ from metricflow_semantics.model.dbt_manifest_parser import parse_manifest_from_d
 from metricflow_semantics.model.semantic_manifest_lookup import SemanticManifestLookup
 
 from abaci import warehouse
-from abaci.paths import SEMANTIC_MANIFEST_PATH
+from abaci.paths import SEMANTIC_MANIFEST_PATH, WAREHOUSE_PATH
 
 
 class _CompileOnlySqlClient:
@@ -52,9 +52,22 @@ class Metric:
 
 
 def _manifest_json() -> str:
+    """The semantic manifest, pointed at the warehouse this process is configured for.
+
+    dbt writes the warehouse's catalog name (the DuckDB file stem) into every relation, so a manifest
+    from `make sample` would otherwise send queries to "sample" while the API reads abaci.duckdb.
+    """
     if not SEMANTIC_MANIFEST_PATH.exists():
         raise FileNotFoundError(f"{SEMANTIC_MANIFEST_PATH} not found. Run `make build` first.")
-    return SEMANTIC_MANIFEST_PATH.read_text()
+    manifest = json.loads(SEMANTIC_MANIFEST_PATH.read_text())
+    catalog_name = WAREHOUSE_PATH.stem
+    relations = [sm["node_relation"] for sm in manifest["semantic_models"]]
+    relations += [t["node_relation"] for t in (manifest.get("project_configuration") or {}).get("time_spines") or []]
+    for rel in relations:
+        if rel.get("database") and rel["database"] != catalog_name:
+            rel["database"] = catalog_name
+            rel["relation_name"] = f'"{catalog_name}"."{rel["schema_name"]}"."{rel["alias"]}"'
+    return json.dumps(manifest)
 
 
 @lru_cache(maxsize=1)
@@ -99,3 +112,28 @@ def query(
         raise ValueError(f"Unknown metric(s): {', '.join(unknown)}")
     sql = compile_sql(metrics, group_by, where, order_by, limit)
     return warehouse.run(sql, max_rows=limit or 10_000).as_dicts()
+
+
+def saved_query_names() -> list[str]:
+    return [q["name"] for q in json.loads(_manifest_json()).get("saved_queries", [])]
+
+
+def query_saved(name: str, limit: int | None = None) -> list[dict]:
+    """Run a saved query by name: the same definition `mf query --saved-query <name>` runs."""
+    if name not in saved_query_names():
+        raise ValueError(f"Unknown saved query: {name}")
+    request = MetricFlowQueryRequest.create(saved_query_name=name, limit=limit)
+    sql = _engine().explain(request).sql_statement.sql
+    return warehouse.run(sql, max_rows=limit or 10_000).as_dicts()
+
+
+@lru_cache(maxsize=1)
+def dimensions() -> dict[str, dict]:
+    """Every dimension a query can group or filter by, keyed by its MetricFlow name (e.g. loan__grade)."""
+    manifest = json.loads(_manifest_json())
+    out: dict[str, dict] = {}
+    for sm in manifest["semantic_models"]:
+        entity = next((e["name"] for e in sm["entities"] if e["type"] == "primary"), None) or sm.get("primary_entity")
+        for d in sm["dimensions"]:
+            out[f"{entity}__{d['name']}"] = {"type": d["type"], "description": d.get("description") or "", "semantic_model": sm["name"]}
+    return out

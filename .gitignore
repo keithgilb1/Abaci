@@ -15,3 +15,5 @@ node_modules/
 .DS_Store
 .env
 .ruff_cache/
+app/dist/
+ask/adapters/
