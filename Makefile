@@ -3,6 +3,8 @@
 #   make setup     # one time: creates .venv with Python 3.12+ and installs the pinned packages
 #   make all       # download the real data, load it, dbt build, validate metrics, run every test, write the report
 #   make sample    # same pipeline on a small synthetic sample (no Kaggle account needed; this is what CI runs)
+#   make app       # build the React dashboards and serve them with the API on http://127.0.0.1:8787
+#   make ask-setup ask-train ask-eval   # Apple Silicon only: the local Ask Abaci model
 #
 # Targets use .venv automatically when it exists. To run dbt or mf by hand: source .venv/bin/activate, then cd dbt.
 
@@ -20,7 +22,7 @@ else
   PY ?= $(PYTHON)
 endif
 
-.PHONY: setup install download sample-data load build validate test lint report docs all sample clean check-python
+.PHONY: setup install download sample-data load build validate test lint report docs all sample clean check-python api app app-dev ask-setup ask-data ask-train ask-eval
 
 check-python:
 	@test -n "$(PYTHON)" || { echo "No python3 found. Install Python 3.12 (macOS: brew install python@3.12)."; exit 1; }
@@ -76,3 +78,28 @@ sample: sample-data load build validate test report
 
 clean:              ## remove dbt build output (keeps downloaded data and the warehouse)
 	cd $(DBT_DIR) && $(BIN)dbt clean --profiles-dir .
+
+# ---- Step 3: dashboards, policy lab, Ask Abaci ----
+
+api:                ## the Abaci API (and the built app, if app/dist exists) on http://127.0.0.1:8787
+	$(PY) -m abaci.server
+
+app:                ## build the React app, then serve it with the API
+	cd app && npm ci && npm run build
+	$(PY) -m abaci.server
+
+app-dev:            ## hot-reloading app on http://localhost:5173 (run `make api` in another terminal)
+	cd app && npm install && npm run dev
+
+ask-setup:          ## Apple Silicon only: install MLX and download Qwen2.5-Coder-3B 4-bit (~1.7 GB)
+	$(PY) -m pip install -r requirements-ask.txt
+	$(PY) -c "from huggingface_hub import snapshot_download; snapshot_download('mlx-community/Qwen2.5-Coder-3B-Instruct-4bit')"
+
+ask-data:           ## regenerate the fine-tuning set in ask/data (deterministic, seed 7)
+	$(PY) -m abaci.ask.dataset
+
+ask-train:          ## LoRA fine-tune (config in ask/lora.yaml); writes ask/adapters/
+	$(BIN)mlx_lm.lora -c ask/lora.yaml
+
+ask-eval:           ## base vs fine-tuned on held-out questions; writes ask/EVAL.md
+	$(PY) -m abaci.ask.evaluate

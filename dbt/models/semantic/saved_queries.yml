@@ -48,3 +48,76 @@ saved_queries:
         - TimeDimension('metric_time', 'year')
       order_by:
         - TimeDimension('metric_time', 'year')
+
+  # ---- Step 3: the React dashboards read these through the API (abaci/server.py) ----
+  - name: portfolio_mature
+    label: Portfolio headline (mature loans)
+    description: One row. The headline KPIs on vintages whose full term has elapsed.
+    query_params:
+      metrics: [loans_issued, originations, realized_net_profit, charge_off_rate, net_charge_off_rate,
+                net_annualized_return, treasury_benchmark_return, excess_return_vs_treasury]
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+
+  - name: returns_by_grade_term
+    label: Returns by grade and term (mature loans)
+    description: Question 1. 36- and 60-month loans of the same grade earn very different returns.
+    query_params:
+      metrics: [loans_issued, originations, weighted_avg_interest_rate, charge_off_rate, net_charge_off_rate,
+                net_annualized_return, excess_return_vs_treasury]
+      group_by:
+        - Dimension('loan__grade')
+        - Dimension('loan__term_months')
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+      order_by:
+        - Dimension('loan__grade')
+        - Dimension('loan__term_months')
+
+  - name: returns_by_purpose
+    label: Returns by loan purpose (mature loans)
+    description: Question 1. Which stated purposes paid.
+    query_params:
+      metrics: [loans_issued, originations, charge_off_rate, net_annualized_return, excess_return_vs_treasury]
+      group_by:
+        - Dimension('loan__purpose')
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+
+  - name: returns_by_state
+    label: Returns by state (mature loans)
+    description: Question 1. Geography of returns.
+    query_params:
+      metrics: [loans_issued, originations, charge_off_rate, net_annualized_return, excess_return_vs_treasury]
+      group_by:
+        - Dimension('loan__state')
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+
+  - name: returns_by_vintage_grade
+    label: Priced spread vs realized return by vintage and grade (mature loans)
+    description: Question 2. What each grade was priced at over Treasuries against what it actually earned, by issue year.
+    query_params:
+      metrics: [loans_issued, originations, priced_spread_over_treasury, charge_off_rate, net_charge_off_rate,
+                net_annualized_return, treasury_benchmark_return, excess_return_vs_treasury]
+      group_by:
+        - TimeDimension('metric_time', 'year')
+        - Dimension('loan__grade')
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+      order_by:
+        - TimeDimension('metric_time', 'year')
+        - Dimension('loan__grade')
+
+  - name: returns_vs_treasury_by_vintage
+    label: Loan return vs matched Treasury by vintage (mature loans)
+    description: Question 4. Each issue year's realized return against a same-term Treasury bought the same month.
+    query_params:
+      metrics: [loans_issued, originations, net_annualized_return, treasury_benchmark_return, excess_return_vs_treasury,
+                priced_spread_over_treasury, net_charge_off_rate]
+      group_by:
+        - TimeDimension('metric_time', 'year')
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+      order_by:
+        - TimeDimension('metric_time', 'year')
