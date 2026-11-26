@@ -1,6 +1,6 @@
 # Data quality report
 
-Generated 2026-11-26 03:07 UTC from `dbt build`. **50 of 52 checks passed**, 2 warned, 0 failed. 8 models built.
+Generated 2026-11-26 03:11 UTC from `dbt build`. **50 of 52 checks passed**, 2 warned, 0 failed. 8 models built.
 
 ## Reconciliation, source file to marts
 
@@ -12,7 +12,7 @@ Generated 2026-11-26 03:07 UTC from `dbt build`. **50 of 52 checks passed**, 2 w
 | Rejected applications | 27,648,741 | 27,648,741 | ties |
 | Rate audit flags | | 11,046 of 2,254,372 loans | reviewed, warn only |
 | Stated rate does not fit installment | | 331 loans | flagged, exposure capped at funded x term |
-| Charged off, cash mostly from recoveries | | 21,285 loans | no per-loan annualized return |
+| Charged off, yet recovered more than lent | | 44 loans | no per-loan annualized return |
 
 ## Every check
 

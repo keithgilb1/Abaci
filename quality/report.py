@@ -81,7 +81,7 @@ def main() -> None:
         f"| Rejected applications | {rej_src:,} | {rej_mart:,} | {'ties' if rej_src == rej_mart else f'{rej_src - rej_mart:,} rows without a valid date'} |",
         f"| Rate audit flags | | {flagged[0]:,} of {flagged[1]:,} loans | reviewed, warn only |",
         f"| Stated rate does not fit installment | | {rate_bad:,} loans | flagged, exposure capped at funded x term |",
-        f"| Charged off, cash mostly from recoveries | | {recov:,} loans | no per-loan annualized return |",
+        f"| Charged off, yet recovered more than lent | | {recov:,} loans | no per-loan annualized return |",
         "",
         "## Every check",
         "",

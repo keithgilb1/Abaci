@@ -66,9 +66,10 @@ economics as (
             installment
             - funded_amount * (interest_rate / 12) / (1 - pow(1 + interest_rate / 12, -term_months))
         ) > 0.05 * installment                                                  as is_rate_inconsistent,
-        -- A charged-off loan whose cash came mostly as post-charge-off recoveries has no meaningful
-        -- holding period, so it gets no per-loan annualized return (portfolio returns still count it).
-        is_charged_off and recoveries > principal_received + interest_received as is_recovery_driven,
+        -- A charged-off loan whose post-charge-off recoveries, net of collection fees, exceed what it lent
+        -- got that cash after the last payment date. It has no meaningful holding period, so it gets no
+        -- per-loan annualized return (portfolio returns still count it).
+        is_charged_off and recoveries - collection_fees > funded_amount          as is_recovery_driven,
         date_add(issue_date, to_months(term_months)) <= date '{{ var("data_as_of") }}'
                                                                                 as is_mature
     from joined

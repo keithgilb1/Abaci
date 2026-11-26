@@ -81,7 +81,7 @@ models:
         description: "The installment is more than 5% off the payment the stated rate implies: the source overwrote the rate on some modified loans."
       - name: is_recovery_driven
         data_type: boolean
-        description: "Charged off, with more cash from post-charge-off recoveries than from payments. No per-loan annualized return."
+        description: "Charged off, yet recovered more than it lent (net of collection fees). No per-loan annualized return."
       - name: loan_amount
         data_type: double
         description: "Amount requested, USD."
