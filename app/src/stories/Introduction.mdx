@@ -1,0 +1,28 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Introduction" />
+
+# Abaci UI
+
+This is the component library behind **Abaci**, a fictional consumer lender built on the public Lending Club loan book (2007–2018). The dashboards answer four questions: which loans make money, whether risk is priced correctly, what happens if approval policy changes, and whether lending beat a Treasury. Every number comes from a dbt semantic layer.
+
+The library turns the **Fold** design system ("a Bauhaus poster on fog") into React components, and the dashboards use them throughout. The stories show real figures from the loan book, saved from the API with `app/scripts/snapshot_fixtures.py`, so you don't need the API or the warehouse to browse them.
+
+## What's here
+
+- **Foundations**: the tokens. Color roles, type scale, radii, spacing and shadows, read from `design/tokens.css`. Components use CSS variables only, with no hex codes.
+- **Components**: Button, Card, Stat, Callout, Tag, Hero, Nav, Tabs, SegmentedControl, Slider, PromptInput, DataTable, ChartFrame, Grid and text helpers.
+- **Charts**: BarChart, ColumnChart, LineChart and FrontierChart. These are hand-built SVG charts that follow the chart rules below.
+- **Patterns**: components put together the way the dashboards use them.
+
+## Principles
+
+1. **Titles state the finding, not the topic.** Use "Grade C earned 6.9%, the best of any grade," not "Returns by grade."
+2. **Use one accent.** Electric Blue marks the *one* point a chart's title is about. Voltage Yellow marks the *one* headline number on a page.
+3. **Keep charts mostly achromatic.** Navy is the main series, Hyacinth is the comparison and Smoke is context. The single warm color is reserved for losses.
+4. **Every chart has a table.** `ChartFrame` puts a Chart / Table switch on each one.
+5. **Accessibility comes with the components.** Tabs, toggles and the slider are built on [Radix](https://www.radix-ui.com/primitives) primitives, so they get keyboard support and ARIA roles. Charts have text alternatives. The a11y panel runs axe on every story.
+
+## How it's built
+
+React 19 + TypeScript, Vite, Storybook 10 with autodocs. The props tables on each Docs page are generated from the TypeScript types and their JSDoc comments. Source: `app/src/ui/`.

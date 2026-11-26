@@ -1,6 +1,6 @@
 import { api, useData, type Row } from '../api'
-import { BarChart, ChartCard, type Bar } from '../components/charts'
-import { Callout, Hero, Kpi, Loading } from '../components/ui'
+import { HINT } from '../hint'
+import { BarChart, Callout, ChartFrame, Grid, Hero, LoadState, Stat, type Bar } from '../ui'
 import { PURPOSE, n, num, pct, pts, usd } from '../format'
 
 const MIN_STATE_LOANS = 3000
@@ -22,7 +22,7 @@ const by = (rows: Row[], metric: string): Row[] => [...rows].sort((a, b) => n(b[
 
 export default function Overview() {
   const { data, error } = useData('overview', load)
-  if (!data) return <Loading error={error} />
+  if (!data) return <LoadState error={error} hint={HINT} />
   const { p, grade, purpose, state, termAll, termSame, verification } = data
   const tsy = n(p.treasury_benchmark_return)
 
@@ -67,15 +67,15 @@ export default function Overview() {
         title={<>Every grade made money. Grade {String(bestGrade.loan__grade)} made the most.</>}
         sub={<>On {usd(p.originations)} of mature loans Abaci earned {pct(p.net_annualized_return)} a year after every charge-off, {usd(p.realized_net_profit)} in all. The surprise is underneath: {PURPOSE[String(worstPurpose.loan__purpose)]?.toLowerCase()} loans {n(worstPurpose.excess_return_vs_treasury) < 0 ? 'earned less than a Treasury' : 'barely beat a Treasury'}, verified income flagged risk instead of reducing it, and the 60-month premium is mostly a calendar effect.</>}
       />
-      <div className="grid g4">
-        <Kpi label="Mature loans" value={num(p.loans_issued)} delta={`${usd(p.originations)} funded, 2007–2016`} />
-        <Kpi label="Net annualized return" value={pct(p.net_annualized_return, 2)} delta={`after ${pct(p.net_charge_off_rate)} net charge-offs`} />
-        <Kpi label="Charge-off rate" value={pct(p.charge_off_rate)} delta="of resolved loans" />
+      <Grid cols={4}>
+        <Stat label="Mature loans" value={num(p.loans_issued)} delta={`${usd(p.originations)} funded, 2007–2016`} />
+        <Stat label="Net annualized return" value={pct(p.net_annualized_return, 2)} delta={`after ${pct(p.net_charge_off_rate)} net charge-offs`} />
+        <Stat label="Charge-off rate" value={pct(p.charge_off_rate)} delta="of resolved loans" />
         <Callout label="Realized net profit" value={usd(p.realized_net_profit, 0)}>Cash back minus cash out, on loans whose full term has ended.</Callout>
-      </div>
+      </Grid>
 
-      <div className="grid g2 section">
-        <ChartCard
+      <Grid cols={2} spaced="section">
+        <ChartFrame
           tags={['Mature vintages', 'Net of losses']}
           title={`Grade ${bestGrade.loan__grade} earned ${pct(bestGrade.net_annualized_return)}, the best of any grade`}
           sub={<>Net annualized return by grade. The line is the matched Treasury, {pct(tsy)}.</>}
@@ -87,9 +87,9 @@ export default function Overview() {
           foot="Return = realized net profit ÷ principal-years outstanding. Higher grades were not safer per dollar of return: they were priced thinner."
         >
           <BarChart rows={gradeBars} fmt={v => pct(v)} refLine={{ value: tsy, label: 'Treasury' }} labelWidth={90} />
-        </ChartCard>
+        </ChartFrame>
 
-        <ChartCard
+        <ChartFrame
           tags={['Mature vintages', 'Excess over Treasury']}
           title={n(worstPurpose.excess_return_vs_treasury) < 0
             ? `${PURPOSE[String(worstPurpose.loan__purpose)]} loans earned less than a Treasury`
@@ -102,11 +102,11 @@ export default function Overview() {
           foot={`Small business loans charged off at ${pct(purpose.find(r => r.loan__purpose === 'small_business')?.charge_off_rate)}, the highest rate of any large purpose.`}
         >
           <BarChart rows={purposeBars} fmt={v => pts(v)} labelWidth={150} valueWidth={80} />
-        </ChartCard>
-      </div>
+        </ChartFrame>
+      </Grid>
 
-      <div className="grid g2 section">
-        <ChartCard
+      <Grid cols={2} spaced="section">
+        <ChartFrame
           tags={['Same vintages', 'Mix effect']}
           title={`The 60-month premium shrinks from ${pts(gapAll)} to ${pts(gapSame)} on the same years`}
           sub="Mature 60-month loans only exist for 2010–2014, Abaci's best years. Compare like with like and most of the gap is the calendar, not the term."
@@ -114,9 +114,9 @@ export default function Overview() {
           foot="A 60-month loan issued after March 2014 had not finished its term by the March 2019 data cut, so it is excluded from every return figure."
         >
           <BarChart rows={termBars} fmt={v => pct(v)} labelWidth={150} />
-        </ChartCard>
+        </ChartFrame>
 
-        <ChartCard
+        <ChartFrame
           tags={['Mature vintages', 'Counter-intuitive']}
           title={`Verified-income loans lost the most: ${pct(ver[ver.length - 1].net_charge_off_rate)} of dollars`}
           sub="Net charge-off rate by income verification. Verification was triggered on riskier applications, so it marks risk rather than reducing it."
@@ -126,11 +126,11 @@ export default function Overview() {
           ] }}
         >
           <BarChart rows={verBars} fmt={v => pct(v)} labelWidth={150} />
-        </ChartCard>
-      </div>
+        </ChartFrame>
+      </Grid>
 
-      <div className="section">
-        <ChartCard
+      <Grid spaced="section">
+        <ChartFrame
           tags={[`States with ${num(MIN_STATE_LOANS)}+ mature loans`]}
           title={`${stateRows[0]?.loan__state} returned ${pct(stateRows[0]?.net_annualized_return)}; ${stateRows[stateRows.length - 1]?.loan__state} returned ${pct(stateRows[stateRows.length - 1]?.net_annualized_return)}`}
           sub="The five best and five worst states by net annualized return. Same products, same pricing grid: the spread is local credit performance."
@@ -140,8 +140,8 @@ export default function Overview() {
           ] }}
         >
           <BarChart rows={stateBars} fmt={v => pct(v)} labelWidth={60} />
-        </ChartCard>
-      </div>
+        </ChartFrame>
+      </Grid>
     </>
   )
 }

@@ -1,0 +1,250 @@
+{
+ "_source": "Snapshot of the Abaci API on the real Lending Club warehouse (mature loans). Regenerate with: python app/scripts/snapshot_fixtures.py",
+ "portfolio": {
+  "loans_issued": 785915,
+  "originations": 10394031800.0,
+  "realized_net_profit": 926166724.05269,
+  "charge_off_rate": 0.15195,
+  "net_charge_off_rate": 0.08394,
+  "net_annualized_return": 0.06571,
+  "treasury_benchmark_return": 0.00959,
+  "excess_return_vs_treasury": 0.05612
+ },
+ "byGrade": [
+  {
+   "loan__grade": "A",
+   "loans_issued": 168943,
+   "originations": 2369021500.0,
+   "weighted_avg_interest_rate": 0.07139,
+   "charge_off_rate": 0.05514,
+   "net_charge_off_rate": 0.0243,
+   "net_annualized_return": 0.0533,
+   "treasury_benchmark_return": 0.00909,
+   "excess_return_vs_treasury": 0.0442
+  },
+  {
+   "loan__grade": "B",
+   "loans_issued": 254143,
+   "originations": 3214992600.0,
+   "weighted_avg_interest_rate": 0.10775,
+   "charge_off_rate": 0.11567,
+   "net_charge_off_rate": 0.0566,
+   "net_annualized_return": 0.06604,
+   "treasury_benchmark_return": 0.00901,
+   "excess_return_vs_treasury": 0.05703
+  },
+  {
+   "loan__grade": "C",
+   "loans_issued": 209194,
+   "originations": 2673547525.0,
+   "weighted_avg_interest_rate": 0.14119,
+   "charge_off_rate": 0.18697,
+   "net_charge_off_rate": 0.10107,
+   "net_annualized_return": 0.06929,
+   "treasury_benchmark_return": 0.00986,
+   "excess_return_vs_treasury": 0.05943
+  },
+  {
+   "loan__grade": "D",
+   "loans_issued": 101282,
+   "originations": 1327466775.0,
+   "weighted_avg_interest_rate": 0.17454,
+   "charge_off_rate": 0.24505,
+   "net_charge_off_rate": 0.14616,
+   "net_annualized_return": 0.06929,
+   "treasury_benchmark_return": 0.01015,
+   "excess_return_vs_treasury": 0.05913
+  },
+  {
+   "loan__grade": "E",
+   "loans_issued": 37772,
+   "originations": 565864875.0,
+   "weighted_avg_interest_rate": 0.20427,
+   "charge_off_rate": 0.3043,
+   "net_charge_off_rate": 0.19352,
+   "net_annualized_return": 0.07683,
+   "treasury_benchmark_return": 0.01097,
+   "excess_return_vs_treasury": 0.06586
+  },
+  {
+   "loan__grade": "F",
+   "loans_issued": 12012,
+   "originations": 195592525.0,
+   "weighted_avg_interest_rate": 0.23389,
+   "charge_off_rate": 0.35301,
+   "net_charge_off_rate": 0.23717,
+   "net_annualized_return": 0.08727,
+   "treasury_benchmark_return": 0.01149,
+   "excess_return_vs_treasury": 0.07578
+  },
+  {
+   "loan__grade": "G",
+   "loans_issued": 2569,
+   "originations": 47546000.0,
+   "weighted_avg_interest_rate": 0.24797,
+   "charge_off_rate": 0.38876,
+   "net_charge_off_rate": 0.2584,
+   "net_annualized_return": 0.08549,
+   "treasury_benchmark_return": 0.01257,
+   "excess_return_vs_treasury": 0.07292
+  }
+ ],
+ "byVintage": [
+  {
+   "metric_time__year": "2007-01-01T00:00:00",
+   "loans_issued": 603,
+   "originations": 4791550.0,
+   "net_annualized_return": -0.01425,
+   "treasury_benchmark_return": 0.03664,
+   "priced_spread_over_treasury": 0.08558,
+   "net_charge_off_rate": 0.1748,
+   "excess_return_vs_treasury": -0.05089
+  },
+  {
+   "metric_time__year": "2008-01-01T00:00:00",
+   "loans_issued": 2393,
+   "originations": 19975025.0,
+   "net_annualized_return": 0.01218,
+   "treasury_benchmark_return": 0.0203,
+   "priced_spread_over_treasury": 0.10341,
+   "net_charge_off_rate": 0.14589,
+   "excess_return_vs_treasury": -0.00812
+  },
+  {
+   "metric_time__year": "2009-01-01T00:00:00",
+   "loans_issued": 5281,
+   "originations": 51814750.0,
+   "net_annualized_return": 0.05937,
+   "treasury_benchmark_return": 0.01435,
+   "priced_spread_over_treasury": 0.11379,
+   "net_charge_off_rate": 0.08976,
+   "excess_return_vs_treasury": 0.04502
+  },
+  {
+   "metric_time__year": "2010-01-01T00:00:00",
+   "loans_issued": 12537,
+   "originations": 126351175.0,
+   "net_annualized_return": 0.07285,
+   "treasury_benchmark_return": 0.01327,
+   "priced_spread_over_treasury": 0.11144,
+   "net_charge_off_rate": 0.08386,
+   "excess_return_vs_treasury": 0.05957
+  },
+  {
+   "metric_time__year": "2011-01-01T00:00:00",
+   "loans_issued": 21721,
+   "originations": 257363650.0,
+   "net_annualized_return": 0.07497,
+   "treasury_benchmark_return": 0.01105,
+   "priced_spread_over_treasury": 0.12154,
+   "net_charge_off_rate": 0.10092,
+   "excess_return_vs_treasury": 0.06392
+  },
+  {
+   "metric_time__year": "2012-01-01T00:00:00",
+   "loans_issued": 53367,
+   "originations": 717942625.0,
+   "net_annualized_return": 0.08163,
+   "treasury_benchmark_return": 0.00508,
+   "priced_spread_over_treasury": 0.14094,
+   "net_charge_off_rate": 0.10261,
+   "excess_return_vs_treasury": 0.07655
+  },
+  {
+   "metric_time__year": "2013-01-01T00:00:00",
+   "loans_issued": 134814,
+   "originations": 1982759550.0,
+   "net_annualized_return": 0.0907,
+   "treasury_benchmark_return": 0.00874,
+   "priced_spread_over_treasury": 0.13985,
+   "net_charge_off_rate": 0.09386,
+   "excess_return_vs_treasury": 0.08197
+  },
+  {
+   "metric_time__year": "2014-01-01T00:00:00",
+   "loans_issued": 175906,
+   "originations": 2307257875.0,
+   "net_annualized_return": 0.07214,
+   "treasury_benchmark_return": 0.00999,
+   "priced_spread_over_treasury": 0.11813,
+   "net_charge_off_rate": 0.07719,
+   "excess_return_vs_treasury": 0.06215
+  },
+  {
+   "metric_time__year": "2015-01-01T00:00:00",
+   "loans_issued": 283173,
+   "originations": 3626461100.0,
+   "net_annualized_return": 0.04981,
+   "treasury_benchmark_return": 0.01028,
+   "priced_spread_over_treasury": 0.10033,
+   "net_charge_off_rate": 0.0756,
+   "excess_return_vs_treasury": 0.03952
+  },
+  {
+   "metric_time__year": "2016-01-01T00:00:00",
+   "loans_issued": 96120,
+   "originations": 1299314500.0,
+   "net_annualized_return": 0.03687,
+   "treasury_benchmark_return": 0.01019,
+   "priced_spread_over_treasury": 0.10096,
+   "net_charge_off_rate": 0.08918,
+   "excess_return_vs_treasury": 0.02668
+  }
+ ],
+ "frontier": [
+  {
+   "min_fico": 640,
+   "share_of_originations": 1.0,
+   "net_annualized_return": 0.06571,
+   "realized_net_profit": 926172147.57579
+  },
+  {
+   "min_fico": 660,
+   "share_of_originations": 0.99967,
+   "net_annualized_return": 0.06573,
+   "realized_net_profit": 926163429.48165
+  },
+  {
+   "min_fico": 680,
+   "share_of_originations": 0.69505,
+   "net_annualized_return": 0.06697,
+   "realized_net_profit": 661321792.17885
+  },
+  {
+   "min_fico": 700,
+   "share_of_originations": 0.41996,
+   "net_annualized_return": 0.06626,
+   "realized_net_profit": 395971942.97615
+  },
+  {
+   "min_fico": 720,
+   "share_of_originations": 0.2208,
+   "net_annualized_return": 0.06255,
+   "realized_net_profit": 194854721.03617
+  },
+  {
+   "min_fico": 740,
+   "share_of_originations": 0.11155,
+   "net_annualized_return": 0.05951,
+   "realized_net_profit": 91774835.14726
+  },
+  {
+   "min_fico": 760,
+   "share_of_originations": 0.05662,
+   "net_annualized_return": 0.0576,
+   "realized_net_profit": 43931729.31256
+  },
+  {
+   "min_fico": 780,
+   "share_of_originations": 0.02733,
+   "net_annualized_return": 0.05668,
+   "realized_net_profit": 20510717.25385
+  },
+  {
+   "min_fico": 800,
+   "share_of_originations": 0.0107,
+   "net_annualized_return": 0.05649,
+   "realized_net_profit": 7856946.16147
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+/* Same shell as the app: Fog canvas, Inter, Navy ink. */
+* { box-sizing: border-box; }
+body { -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }

@@ -1,0 +1,57 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/addon-docs/blocks'
+
+<Meta title="Foundations/Tokens" />
+
+# Foundations
+
+All values live in `design/tokens.css` as CSS custom properties. The library imports that file and refers to tokens only through `var(--…)`.
+
+## Color roles
+
+<ColorPalette>
+  <ColorItem title="Ink" subtitle="Text, filled buttons, the main chart series" colors={{ 'Midnight Navy': 'var(--color-midnight-navy)', Abyss: 'var(--color-abyss)' }} />
+  <ColorItem title="Accent" subtitle="Links, active nav, the ONE highlighted data point" colors={{ 'Electric Blue': 'var(--color-electric-blue)' }} />
+  <ColorItem title="Lines" subtitle="Borders, icons, ghost buttons, comparison series" colors={{ 'Cornflower Steel': 'var(--color-cornflower-steel)', Hyacinth: 'var(--color-hyacinth)' }} />
+  <ColorItem title="Surfaces" subtitle="Canvas, cards, nested surfaces" colors={{ 'Fog White': 'var(--color-fog-white)', 'Pure White': 'var(--color-pure-white)', 'Mist Gray': 'var(--color-mist-gray)', 'Silver Lining': 'var(--color-silver-lining)' }} />
+  <ColorItem title="Secondary text" subtitle="Supporting sentences, tags, context series" colors={{ Dusk: 'var(--color-dusk)', Smoke: 'var(--color-smoke)' }} />
+  <ColorItem title="Pop" subtitle="At most ONE callout per page" colors={{ 'Voltage Yellow': 'var(--color-voltage-yellow)' }} />
+  <ColorItem title="Chart roles" subtitle="main · compare · context · highlight · loss" colors={{ primary: 'var(--chart-primary)', secondary: 'var(--chart-secondary)', tertiary: 'var(--chart-tertiary)', highlight: 'var(--chart-highlight)', loss: 'var(--chart-loss)' }} />
+</ColorPalette>
+
+## Type
+
+Inter stands in for the licensed GT Walsheim Pro and GT America. Use tabular figures (`font-variant-numeric: tabular-nums`) for every number in a table, KPI or axis.
+
+<Typeset fontFamily="var(--font-sans)" fontWeight={700} sampleText="Grade E loans lost money." fontSizes={['64px', '42px']} />
+<Typeset fontFamily="var(--font-sans)" fontWeight={600} sampleText="Grade C earned 6.9%, the best of any grade" fontSizes={['32px', '24px']} />
+<Typeset fontFamily="var(--font-sans)" fontWeight={400} sampleText="On $10.4B of mature loans Abaci earned 6.6% a year after every charge-off." fontSizes={['18px', '16px', '14px']} />
+
+| Role | Token | Size / weight |
+| --- | --- | --- |
+| Poster headline | `--text-display`, `--text-heading-lg` | 64–100px / 700, tight negative tracking |
+| Card title | `--text-subheading` | 24px / 600 |
+| KPI number | `--text-heading-sm` | 32px / 600, tabular |
+| Body | `--text-body`, `--text-body-sm` | 18 / 16px / 400 |
+| Tag and label | `--text-tag` | 10px / 600, uppercase, +0.4px |
+
+## Shape, space, elevation
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--radius-cards` | 12px | Every card |
+| `--radius-full` | 9999px | Everything you press: buttons, tags, toggles, slider thumbs |
+| `--radius-nav` | 24px | The nav pill |
+| `--card-padding` | 24px | Card padding |
+| `--section-gap` | 48px | Space between sections |
+| `--page-max-width` | 1200px | Content width |
+| `--shadow-xl` | navy-tinted 9/25 | Cards on fog |
+| `--shadow-md` | navy-tinted 6/16 | Nav pill, tooltips |
+| `--shadow-sm` | navy-tinted 1/4 | Filled buttons, active tab |
+
+<div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', padding: '24px', background: 'var(--color-fog-white)', borderRadius: 12 }}>
+  {['--shadow-sm', '--shadow-md', '--shadow-xl'].map(s => (
+    <div key={s} style={{ width: 160, height: 96, background: 'var(--color-pure-white)', borderRadius: 'var(--radius-cards)', boxShadow: `var(${s})`, display: 'grid', placeItems: 'center', fontSize: 13, color: 'var(--color-dusk)' }}>{s}</div>
+  ))}
+</div>
+
+The system is strictly flat: it uses no gradients, no photography and no pure black.

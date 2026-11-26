@@ -4,6 +4,7 @@ import Lab from './pages/Lab'
 import Overview from './pages/Overview'
 import Pricing from './pages/Pricing'
 import Treasury from './pages/Treasury'
+import { Nav } from './ui'
 
 const TABS = [
   { id: 'overview', label: 'Overview', page: Overview },
@@ -25,12 +26,7 @@ export default function App() {
   const Page = tab.page
   return (
     <>
-      <div className="nav-wrap">
-        <nav className="nav" aria-label="Sections">
-          <span className="brand">Abaci</span>
-          {TABS.map(t => <a key={t.id} href={`#/${t.id}`} className={t.id === tab.id ? 'active' : ''}>{t.label}</a>)}
-        </nav>
-      </div>
+      <Nav brand="Abaci" activeId={tab.id} items={TABS.map(t => ({ id: t.id, label: t.label, href: `#/${t.id}` }))} />
       <main className="page">
         <Page />
         <footer className="footer">

@@ -31,14 +31,22 @@ GT Walsheim Pro and GT America are licensed, so **Inter** (400/500/600/700) subs
 - Use 24/32px weight 600 for card titles, 16–18px weight 400 for body text, and 10px uppercase +0.4px for tags and labels.
 - Left-align body copy. Center only the hero.
 
-## Components to build
+## Components
+These are built in `app/src/ui/` and documented in Storybook (`make storybook`).
+
 - **Filled pill button:** Navy background, white 16/600 text, 16×12 padding, `--shadow-sm`.
 - **Ghost pill button:** 1.5px Cornflower border and text, no fill.
-- **KPI card:** a white card with a 10px uppercase Smoke label and a 32px/600 Navy number. The delta goes underneath in Dusk.
-- **Category tag:** a Fog pill with a 10px uppercase Smoke label (e.g., GRADE C, 60 MO, DEBT CONSOLIDATION).
-- **Sticky nav pill:** 24px radius on Fog with `--shadow-md`. Links are Navy, the active link is Electric Blue. Tabs: Overview · Pricing · Policy Lab · vs Treasury · Ask Abaci.
+- **KPI card:** a white card with a 10px uppercase label (Dusk; see Accessibility adjustments below) and a 32px/600 Navy number. The delta goes underneath in Dusk.
+- **Category tag:** a Fog pill with a 10px uppercase label in Dusk (e.g., GRADE C, 60 MO, DEBT CONSOLIDATION).
+- **Sticky nav pill:** 24px radius on Fog with `--shadow-md`. Links are Navy. The active link is marked with an Electric Blue dot. Tabs: Overview · Pricing · Policy Lab · vs Treasury · Ask Abaci.
 - **Voltage callout:** the single most important number on the page.
 - **Lab controls:** pill-shaped sliders and segmented toggles. The thumb is Navy, the active track is Electric Blue.
+
+## Accessibility adjustments (2026-11-26)
+The Storybook accessibility check (axe) flagged two Fold colors that fail WCAG AA for small text. Smoke on white is 2.7:1, and Electric Blue on white is 2.9:1. The library keeps both colors and changes where they're used:
+- Tags, labels, table headers and eyebrows use **Dusk** (5.2:1) through `--text-label-color`. Smoke is still used for context chart series and other marks.
+- The active nav link keeps **Navy** text and shows the Electric Blue accent as a dot.
+- Focus rings use **Cornflower Steel** (7.5:1).
 
 ## Charts
 - Most series are achromatic: Navy for the main series, Hyacinth for the comparison and Smoke for context. Electric Blue is for the one point the title talks about.

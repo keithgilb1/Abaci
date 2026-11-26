@@ -69,6 +69,11 @@
   --surface-nested: var(--color-mist-gray);
   --surface-pop: var(--color-voltage-yellow);
 
+  /* Text roles (Abaci addition). Smoke on white is 2.7:1 and Electric Blue is 2.9:1, both under the
+     WCAG AA 4.5:1 minimum for small text. Small text uses Dusk (5.2:1 on white, 4.6:1 on Fog).
+     Smoke and Electric Blue stay for chart marks, dots and other non-text shapes. */
+  --text-label-color: var(--color-dusk);
+
   /* Chart roles (Abaci addition; the system is near-achromatic with one accent) */
   --chart-primary: var(--color-midnight-navy);      /* the main series, e.g. Abaci loan return */
   --chart-secondary: var(--color-hyacinth);         /* comparison series, e.g. Treasury yield */

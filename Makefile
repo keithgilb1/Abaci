@@ -4,6 +4,7 @@
 #   make all       # download the real data, load it, dbt build, validate metrics, run every test, write the report
 #   make sample    # same pipeline on a small synthetic sample (no Kaggle account needed; this is what CI runs)
 #   make app       # build the React dashboards and serve them with the API on http://127.0.0.1:8787
+#   make storybook # the Abaci UI component library on http://localhost:6006 (no API or data needed)
 #   make ask-setup ask-train ask-eval   # Apple Silicon only: the local Ask Abaci model
 #
 # Targets use .venv automatically when it exists. To run dbt or mf by hand: source .venv/bin/activate, then cd dbt.
@@ -22,7 +23,7 @@ else
   PY ?= $(PYTHON)
 endif
 
-.PHONY: setup install download sample-data load build validate test lint report docs all sample clean check-python api app app-dev ask-setup ask-data ask-train ask-eval
+.PHONY: setup install download sample-data load build validate test lint report docs all sample clean check-python api app app-dev storybook storybook-build ask-setup ask-data ask-train ask-eval
 
 check-python:
 	@test -n "$(PYTHON)" || { echo "No python3 found. Install Python 3.12 (macOS: brew install python@3.12)."; exit 1; }
@@ -90,6 +91,12 @@ app:                ## build the React app, then serve it with the API
 
 app-dev:            ## hot-reloading app on http://localhost:5173 (run `make api` in another terminal)
 	cd app && npm install && npm run dev
+
+storybook:          ## the Abaci UI component library (Storybook) on http://localhost:6006
+	cd app && npm install && npm run storybook
+
+storybook-build:    ## static Storybook site in app/storybook-static/ (what GitHub Pages publishes)
+	cd app && npm ci && npm run build-storybook
 
 ask-setup:          ## Apple Silicon only: install MLX and download Qwen2.5-Coder-3B 4-bit (~1.7 GB)
 	$(PY) -m pip install -r requirements-ask.txt
