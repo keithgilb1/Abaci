@@ -1,0 +1,89 @@
+/* Abaci design tokens, adapted from the "Fold" style reference Keith supplied.
+   GT Walsheim Pro and GT America are licensed, so Inter substitutes for both. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-midnight-navy: #20294c;
+  --color-cornflower-steel: #375390;
+  --color-electric-blue: #459af8;
+  --color-fog-white: #f0f1f5;
+  --color-pure-white: #ffffff;
+  --color-silver-lining: #c7cbdb;
+  --color-mist-gray: #dddfe9;
+  --color-smoke: #979db5;
+  --color-dusk: #676b89;
+  --color-abyss: #042939;
+  --color-voltage-yellow: #ffff00;
+  --color-hyacinth: #788dba;
+
+  /* Fonts (Inter substitutes for GT Walsheim Pro / GT America) */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-sans);
+  --font-numeric: var(--font-sans); /* use font-variant-numeric: tabular-nums in tables and KPIs */
+
+  /* Type scale */
+  --text-tag: 10px;          --leading-tag: 1.2;           --tracking-tag: 0.4px;
+  --text-caption: 14px;      --leading-caption: 1.43;      --tracking-caption: 0.35px;
+  --text-body-sm: 16px;      --leading-body-sm: 1.5;       --tracking-body-sm: 0px;
+  --text-body: 18px;         --leading-body: 1.41;         --tracking-body: -0.54px;
+  --text-subheading: 24px;   --leading-subheading: 1.33;   --tracking-subheading: -0.72px;
+  --text-heading-sm: 32px;   --leading-heading-sm: 1.18;   --tracking-heading-sm: -0.96px;
+  --text-heading: 42px;      --leading-heading: 1;         --tracking-heading: -1.68px;
+  --text-heading-lg: 64px;   --leading-heading-lg: 0.85;   --tracking-heading-lg: -2.56px;
+  --text-display: 100px;     --leading-display: 0.91;      --tracking-display: -12.5px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing and layout */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --page-max-width: 1200px;
+  --section-gap: 48px;
+  --card-padding: 24px;
+  --element-gap: 8px;
+
+  /* Radii: cards 12px, pills 9999px are the whole vocabulary */
+  --radius-cards: 12px;
+  --radius-images: 16px;
+  --radius-nav: 24px;
+  --radius-panels: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows (navy-tinted, never gray) */
+  --shadow-xl: rgba(32, 41, 76, 0.12) 0px 9px 25px 0px;
+  --shadow-md: rgba(32, 41, 76, 0.12) 0px 6px 16px 0px, rgba(32, 41, 76, 0.09) 0px 1px 5px 0px;
+  --shadow-md-2: rgba(32, 41, 76, 0.07) 0px 4px 11px 0px, rgba(32, 41, 76, 0.12) 0px 1px 3px 0px;
+  --shadow-subtle: rgba(255, 255, 255, 0.53) 0px 1px 0px 0px;
+  --shadow-sm: rgba(32, 41, 76, 0.1) 0px 1px 4px 0px;
+
+  /* Surfaces */
+  --surface-canvas: var(--color-fog-white);
+  --surface-card: var(--color-pure-white);
+  --surface-nested: var(--color-mist-gray);
+  --surface-pop: var(--color-voltage-yellow);
+
+  /* Chart roles (Abaci addition; the system is near-achromatic with one accent) */
+  --chart-primary: var(--color-midnight-navy);      /* the main series, e.g. Abaci loan return */
+  --chart-secondary: var(--color-hyacinth);         /* comparison series, e.g. Treasury yield */
+  --chart-tertiary: var(--color-smoke);             /* context series, everything else */
+  --chart-highlight: var(--color-electric-blue);    /* the one point or bar the story is about */
+  --chart-grid: var(--color-mist-gray);
+  --chart-axis: var(--color-silver-lining);
+  --chart-label: var(--color-dusk);
+  --chart-loss: #c2410c;  /* Abaci addition, losses only, use sparingly; check contrast on white */
+}
+
+body {
+  background: var(--surface-canvas);
+  color: var(--color-midnight-navy);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body-sm);
+}

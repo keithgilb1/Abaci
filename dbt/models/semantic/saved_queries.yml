@@ -1,0 +1,50 @@
+version: 2
+
+# Dashboard datasets are defined once, as saved queries. The React app's data export reads them with
+# `mf query --saved-query <name>`, the same path a BI connector takes.
+saved_queries:
+  - name: returns_by_grade
+    label: Returns vs Treasury by grade (mature loans)
+    description: Question 1 and 4. Which grades earned their risk, on vintages whose full term has elapsed.
+    query_params:
+      metrics: [loans_issued, originations, weighted_avg_interest_rate, charge_off_rate, net_charge_off_rate,
+                net_annualized_return, treasury_benchmark_return, excess_return_vs_treasury]
+      group_by:
+        - Dimension('loan__grade')
+      where:
+        - "{{ Dimension('loan__is_mature') }} = true"
+      order_by:
+        - Dimension('loan__grade')
+
+  - name: pricing_by_vintage
+    label: Priced vs realized by grade and vintage
+    description: Question 2. What Abaci charged over Treasuries versus what it lost, by grade and vintage year.
+    query_params:
+      metrics: [originations, weighted_avg_interest_rate, priced_spread_over_treasury, net_charge_off_rate,
+                net_annualized_return, treasury_benchmark_return]
+      group_by:
+        - TimeDimension('metric_time', 'year')
+        - Dimension('loan__grade')
+      order_by:
+        - TimeDimension('metric_time', 'year')
+        - Dimension('loan__grade')
+
+  - name: originations_trend
+    label: Monthly originations
+    description: Volume and rate by issue month.
+    query_params:
+      metrics: [loans_issued, originations, weighted_avg_interest_rate, priced_spread_over_treasury]
+      group_by:
+        - TimeDimension('metric_time', 'month')
+      order_by:
+        - TimeDimension('metric_time', 'month')
+
+  - name: approval_funnel
+    label: Applications and approval rate by year
+    description: Question 3. The top of the funnel the credit policy lab works on.
+    query_params:
+      metrics: [approval_rate]
+      group_by:
+        - TimeDimension('metric_time', 'year')
+      order_by:
+        - TimeDimension('metric_time', 'year')

@@ -80,12 +80,19 @@ Every check runs on every PR in GitHub Actions and writes [`DATA_QUALITY.md`](DA
 - **Accuracy**: funded dollars, cash received and recoveries in `fct_loans` tie to the source file to the cent. Payment components add up to total payments.
 - **Contracts** on every mart column. Renaming a column or changing a type fails the build until the contract changes with it.
 - **Schema and range tests**: keys, accepted values, and ranges on rates, FICO, DTI, loss amounts and returns.
-- **Unit tests** on hand-made loans for the three business rules that matter most: Treasury matched to term, charge-off loss net of recoveries and fees, and vintage maturity.
+- **Unit tests** on hand-made loans for the five business rules that matter most: Treasury matched to term, charge-off loss net of recoveries and fees, vintage maturity, exposure capped when the stated rate is wrong, and no annualized return for loans that recovered more than they lent.
 - **PII scan**: fails if any public column looks like a name, employer, zip code, address, phone or email.
 - **Rate audit**: each loan's rate is scored against its sub-grade, term and month peers with a robust z-score.
 - **Semantic layer validation** with `mf validate-configs` against the warehouse.
 - **Parity**: the dashboard path (`mf query --saved-query`), the Python engine the AI analyst uses, and an independent pandas re-implementation from the raw CSVs that shares no code with dbt must agree on every metric for every grade, to 1e-9.
 - **Proof the checks bite**: breaking a staging filter so it silently drops loans fails both reconciliation tests.
+
+### What the checks found in the real data
+
+- **Stated rate does not fit the installment (331 loans).** On some modified loans the source overwrote the stated rate, often to exactly 6.00%, so the installment implies a different rate. Dividing interest by the wrong rate overstated exposure (322,950 principal-years on a $33,575 loan), so these loans are flagged (`is_rate_inconsistent`) and their principal-years are capped at funded amount x term. A warn-level test keeps the count visible on every build.
+- **Charge-offs that recovered more than they lent (44 loans).** Post-charge-off recoveries, net of collection fees, exceeded the funded amount, and that cash has no date. Annualizing over the one- or two-month holding period this implies compounded returns to over 1,000,000%. They get no per-loan annualized return (`is_recovery_driven`). Portfolio returns are unaffected, since they divide total net profit by total principal-years.
+- **DTI of -1 (2 loans).** The source codes a missing debt-to-income ratio as -1, so staging treats it as missing.
+- **Summary lines dropped (33).** The accepted-loans file includes 33 "Total amount funded in policy code" summary lines that are not loans. Staging drops them by rule, and the reconciliation accounts for each one.
 
 ## Layout
 

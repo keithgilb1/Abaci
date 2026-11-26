@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_loans
+    description: One row per Abaci loan (Lending Club accepted loans), typed and cleaned.
+    columns:
+      - name: loan_id
+        data_tests: [unique, not_null]
+      - name: term_months
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [36, 60]
+      - name: grade
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+      - name: loan_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Fully Paid', 'Charged Off', 'Default', 'Late', 'In Grace Period', 'Current', 'Other']
+  - name: stg_rejections
+    description: One row per rejected application.
+  - name: stg_fred_series
+    description: FRED rate and macro observations, long format.
+    columns:
+      - name: series_id
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['DGS3', 'DGS5', 'FEDFUNDS', 'UNRATE']

@@ -1,0 +1,6 @@
+line-length = 160
+target-version = "py312"
+extend-exclude = ["dbt/target", "data", "app"]
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP"]

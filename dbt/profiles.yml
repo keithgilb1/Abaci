@@ -1,0 +1,7 @@
+abaci:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('ABACI_DB', '../data/abaci.duckdb') }}"
+      threads: 4
