@@ -1,0 +1,17 @@
+# data stays local (large, and Kaggle terms)
+data/*
+!data/.gitkeep
+*.duckdb
+*.duckdb.wal
+.venv/
+__pycache__/
+dbt/target/
+dbt/logs/
+logs/
+.pytest_cache/
+dbt/dbt_packages/
+dbt/.user.yml
+node_modules/
+.DS_Store
+.env
+.ruff_cache/
