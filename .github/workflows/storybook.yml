@@ -1,0 +1,57 @@
+name: storybook
+
+# Builds the Abaci UI Storybook on every pull request, and publishes it to GitHub Pages from main.
+# One-time setup: repo Settings → Pages → Build and deployment → Source: GitHub Actions.
+
+on:
+  pull_request:
+    paths: ["app/**", "design/**", ".github/workflows/storybook.yml"]
+  push:
+    branches: [main]
+    paths: ["app/**", "design/**", ".github/workflows/storybook.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: storybook-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Typecheck (components and stories)
+        run: npm run typecheck
+      - name: Build the static Storybook
+        run: npm run build-storybook
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/storybook-static
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

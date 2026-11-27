@@ -16,4 +16,7 @@ node_modules/
 .env
 .ruff_cache/
 app/dist/
+app/storybook-static/
+app/*.tsbuildinfo
+debug-storybook.log
 ask/adapters/

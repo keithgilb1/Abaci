@@ -57,6 +57,13 @@ make ask-eval  # optional: base vs fine-tuned on held-out questions, writes ask/
 
 Without an adapter, Ask Abaci falls back to the base model and says so on screen.
 
+The component library has its own Storybook. It needs Node 20+ but doesn't need Python, data or the API:
+
+```bash
+make storybook        # Abaci UI on http://localhost:6006
+make storybook-build  # the static site in app/storybook-static/, the same build GitHub Pages publishes
+```
+
 `make all` needs a Kaggle API token at `~/.kaggle/kaggle.json` (kaggle.com, Settings, API, Create New Token). The sample builds its own warehouse (`data/sample.duckdb`), so it never touches the real one (`data/abaci.duckdb`).
 
 ## Data
@@ -163,6 +170,14 @@ Execution match, so a wrong spec that happens to return the right rows still cou
 
 Training takes about 45 minutes on an M-series MacBook with 16 GB (`make ask-train`, config in [`ask/lora.yaml`](ask/lora.yaml)): 600 iterations, batch 4, rank-8 LoRA on 16 layers, loss on the answer only.
 
+## Design system and Storybook
+
+The dashboards are built from a small React library in [`app/src/ui/`](app/src/ui), the [Fold design system](design/DESIGN.md) in code. It has 15 components and 4 hand-built SVG charts. The library reads design tokens only as CSS variables from [`design/tokens.css`](design/tokens.css) and contains no hex codes. The Policy Lab's sliders and toggles and the Chart / Table switches are built on [Radix](https://www.radix-ui.com/primitives) primitives, so they get keyboard support and ARIA roles. Every component has a typed props API with variants and a Storybook page. Those pages are generated from the TypeScript types and include a story for each state: empty, loading, error, disabled and busy. The chart stories use real figures from the loan book, saved by [`app/scripts/snapshot_fixtures.py`](app/scripts/snapshot_fixtures.py).
+
+Storybook's accessibility check (axe) runs on every story. The first pass found that two Fold colors fail WCAG AA as small text: Smoke on white (2.7:1) and Electric Blue on white (2.9:1). Labels and tags now use Dusk (5.2:1). The active nav link and the focus ring show the accent without relying on low-contrast text. All 78 stories now pass. [`DESIGN.md`](design/DESIGN.md) records the change.
+
+The [storybook workflow](.github/workflows/storybook.yml) builds the site on every pull request and publishes it to GitHub Pages from `main`.
+
 ## Layout
 
 ```
@@ -171,7 +186,7 @@ dbt/models/        staging/  intermediate/  marts/  audit/  semantic/
 dbt/tests/         reconciliation, PII and business-rule tests
 abaci/             semantic-layer client, read-only warehouse access, API server, policy lab
 abaci/ask/         Ask Abaci: query spec guard, prompt, training-set generator, MLX inference, eval
-app/               React dashboards (Vite, TypeScript, hand-built SVG charts in the Fold system)
+app/               React dashboards (Vite, TypeScript); app/src/ui/ is the component library and its stories
 ask/               fine-tuning data, LoRA config, EVAL.md (the trained adapter stays local, git-ignored)
 parity/            independent pandas recompute and parity tests
 python_tests/      ingest tests

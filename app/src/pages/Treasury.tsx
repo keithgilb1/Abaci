@@ -1,6 +1,6 @@
 import { api, useData } from '../api'
-import { ChartCard, ColumnChart, LineChart, type Tone } from '../components/charts'
-import { Callout, Hero, Kpi, Loading } from '../components/ui'
+import { HINT } from '../hint'
+import { Callout, Card, ChartFrame, ColumnChart, Grid, Hero, LineChart, LoadState, Stat, type Tone } from '../ui'
 import { n, num, pct, pts, usd, year } from '../format'
 
 async function load() {
@@ -10,7 +10,7 @@ async function load() {
 
 export default function Treasury() {
   const { data, error } = useData('treasury', load)
-  if (!data) return <Loading error={error} />
+  if (!data) return <LoadState error={error} hint={HINT} />
   const { p, v } = data
   const years = v.map(r => year(r.metric_time__year))
   const losers = v.filter(r => n(r.excess_return_vs_treasury) < 0)
@@ -27,17 +27,17 @@ export default function Treasury() {
         title={<>Loans returned {pct(p.net_annualized_return)} a year. Treasuries paid {pct(p.treasury_benchmark_return)}.</>}
         sub={<>Every mature loan is measured against a Treasury of the same term bought in the same month: the 3-year note for 36-month loans, the 5-year for 60-month. After every charge-off, the book earned about {multiple.toFixed(0)}× the risk-free rate. That gap is what Abaci was paid for credit risk.</>}
       />
-      <div className="grid g4">
-        <Kpi label="Net annualized return" value={pct(p.net_annualized_return, 2)} delta="mature loans, after losses" />
-        <Kpi label="Matched Treasury" value={pct(p.treasury_benchmark_return, 2)} delta="same term, same month, same dollars" />
-        <Kpi label="Vintages that lost to Treasuries" value={`${losers.length} of ${v.length}`} delta={losers.length ? losers.map(r => year(r.metric_time__year)).join(', ') : 'none'} />
+      <Grid cols={4}>
+        <Stat label="Net annualized return" value={pct(p.net_annualized_return, 2)} delta="mature loans, after losses" />
+        <Stat label="Matched Treasury" value={pct(p.treasury_benchmark_return, 2)} delta="same term, same month, same dollars" />
+        <Stat label="Vintages that lost to Treasuries" value={`${losers.length} of ${v.length}`} delta={losers.length ? losers.map(r => year(r.metric_time__year)).join(', ') : 'none'} />
         <Callout label="Excess return vs Treasury" value={pts(p.excess_return_vs_treasury)}>
           A year, on {usd(p.originations)} lent. Credit risk paid.
         </Callout>
-      </div>
+      </Grid>
 
-      <div className="grid g2 section">
-        <ChartCard
+      <Grid cols={2} spaced="section">
+        <ChartFrame
           tags={['Mature vintages', 'Principal-weighted']}
           title={losers.length === 1 ? `Only the ${year(losers[0].metric_time__year)} vintage lost to a Treasury` : `${losers.length} vintages lost to a Treasury`}
           sub="Net annualized return on loans against the matched Treasury yield, by issue year."
@@ -51,9 +51,9 @@ export default function Treasury() {
             { name: 'Loans', tone: 'main', values: v.map(r => n(r.net_annualized_return)) },
             { name: 'Treasury', tone: 'compare', values: v.map(r => n(r.treasury_benchmark_return)) },
           ]} highlight={{ series: 0, index: bestIdx, label: `${year(best.metric_time__year)}: ${pct(best.net_annualized_return)}` }} />
-        </ChartCard>
+        </ChartFrame>
 
-        <ChartCard
+        <ChartFrame
           tags={['Mature vintages']}
           title={`The ${year(best.metric_time__year)} vintage beat Treasuries by the most: ${pts(best.excess_return_vs_treasury)}`}
           sub="Excess return over the matched Treasury, by issue year."
@@ -61,11 +61,11 @@ export default function Treasury() {
         >
           <ColumnChart labels={years} fmt={x => pct(x, 0)} values={v.map(r => n(r.excess_return_vs_treasury))}
             tones={v.map((r, i): Tone => (n(r.excess_return_vs_treasury) < 0 ? 'loss' : i === bestIdx ? 'highlight' : 'main'))} />
-        </ChartCard>
-      </div>
+        </ChartFrame>
+      </Grid>
 
-      <div className="grid g2 section">
-        <ChartCard
+      <Grid cols={2} spaced="section">
+        <ChartFrame
           tags={['Priced vs earned']}
           title={`In ${year(last.metric_time__year)} Abaci priced ${pts(last.priced_spread_over_treasury)} over Treasuries and kept ${pts(last.excess_return_vs_treasury)}`}
           sub="What each vintage was priced above Treasuries, against what it actually earned above them after losses."
@@ -79,20 +79,18 @@ export default function Treasury() {
             { name: 'Priced spread', tone: 'compare', values: v.map(r => n(r.priced_spread_over_treasury)) },
             { name: 'Earned over Treasury', tone: 'main', values: v.map(r => n(r.excess_return_vs_treasury)) },
           ]} />
-        </ChartCard>
+        </ChartFrame>
 
-        <div className="card">
-          <span className="tag">Method</span>
-          <h2>How the benchmark is built</h2>
-          <p className="sub">One governed definition, in <code>metrics.yml</code>, used by every screen and by Ask Abaci.</p>
-          <ul className="note" style={{ paddingLeft: 18, lineHeight: 1.7 }}>
+        <Card tags={['Method']} title="How the benchmark is built"
+          sub={<>One governed definition, in <code>metrics.yml</code>, used by every screen and by Ask Abaci.</>}>
+          <ul className="ab-note" style={{ paddingLeft: 18, lineHeight: 1.7 }}>
             <li><b>Loan return</b> is realized net profit ÷ principal-years outstanding. Interest received ÷ rate recovers balance × time exactly, so a loan that defaults in month two counts for two months of exposure, not three years.</li>
             <li><b>Treasury return</b> is the FRED constant-maturity yield (DGS3 or DGS5) in the issue month, weighted by the same principal-years.</li>
             <li><b>Mature only.</b> A vintage counts once its full term ended before the March 2019 data cut. Younger loans resolve early, which skews them toward defaults and prepayments.</li>
             <li><b>Not included:</b> servicing cost, funding cost and taxes. This is the gross credit premium, before Abaci runs the business.</li>
           </ul>
-        </div>
-      </div>
+        </Card>
+      </Grid>
     </>
   )
 }

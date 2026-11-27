@@ -1,0 +1,135 @@
+/* Abaci UI library. Every value comes from the Fold tokens in design/tokens.css:
+   no hex codes below this line, only var(--…). */
+@import '../../../design/tokens.css';
+
+/* Focus ring: Cornflower Steel (7.5:1 on white). Electric Blue is 2.9:1, under the 3:1 needed for focus indicators. */
+.ab-btn:focus-visible, .ab-seg-item:focus-visible, .ab-tab:focus-visible, .ab-slider-thumb:focus-visible, .ab-nav-link:focus-visible {
+  outline: 2px solid var(--color-cornflower-steel); outline-offset: 2px;
+}
+
+/* ---------- Layout ---------- */
+.ab-grid { display: grid; gap: var(--spacing-24); }
+.ab-grid[data-cols='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ab-grid[data-cols='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ab-grid[data-cols='4'] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ab-grid[data-cols='sidebar'] { grid-template-columns: 360px minmax(0, 1fr); align-items: start; }
+.ab-grid[data-spaced='section'] { margin-top: var(--section-gap); }
+.ab-grid[data-spaced='tight'] { margin-top: var(--spacing-24); }
+@media (max-width: 900px) { .ab-grid[data-cols] { grid-template-columns: 1fr; } }
+
+/* ---------- Hero ---------- */
+.ab-hero { text-align: center; padding: 72px 0 var(--spacing-48); }
+.ab-hero h1 { font-size: clamp(48px, 7vw, 88px); line-height: var(--leading-display); letter-spacing: -0.045em; font-weight: var(--font-weight-bold); margin: 0 auto 20px; max-width: 1000px; color: var(--color-midnight-navy); }
+.ab-hero p { font-size: var(--text-body); line-height: var(--leading-body); letter-spacing: var(--tracking-body); color: var(--color-dusk); max-width: 720px; margin: 0 auto; }
+.ab-eyebrow, .ab-label { font-size: var(--text-tag); line-height: var(--leading-tag); text-transform: uppercase; letter-spacing: var(--tracking-tag); color: var(--text-label-color); font-weight: var(--font-weight-semibold); }
+.ab-eyebrow { margin-bottom: var(--spacing-16); }
+
+/* ---------- Card ---------- */
+.ab-card { background: var(--surface-card); border-radius: var(--radius-cards); box-shadow: var(--shadow-xl); padding: var(--card-padding); min-width: 0; color: var(--color-midnight-navy); }
+.ab-card[data-tone='nested'] { background: var(--surface-canvas); box-shadow: none; }
+.ab-card[data-sticky] { position: sticky; top: 96px; }
+.ab-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.ab-card-head[data-title] { align-items: center; margin-bottom: 6px; }
+.ab-card-head[data-title] .ab-card-title { margin: 0; }
+.ab-card-title { font-size: var(--text-subheading); line-height: var(--leading-subheading); letter-spacing: var(--tracking-subheading); font-weight: var(--font-weight-semibold); margin: 0 0 6px; }
+.ab-card-sub { color: var(--color-dusk); margin: 0 0 20px; font-size: var(--text-body-sm); }
+.ab-card-foot { color: var(--color-dusk); font-size: var(--text-caption); margin: var(--spacing-16) 0 0; }
+.ab-card-tags { min-height: 1px; }
+
+/* ---------- Tag ---------- */
+.ab-tag { display: inline-block; font-size: var(--text-tag); line-height: var(--leading-tag); text-transform: uppercase; letter-spacing: var(--tracking-tag); color: var(--text-label-color); font-weight: var(--font-weight-semibold); background: var(--color-fog-white); border-radius: var(--radius-full); padding: 5px 10px; margin: 0 6px 6px 0; }
+.ab-card[data-tone='nested'] .ab-tag { background: var(--surface-card); }
+
+/* ---------- Stat (KPI) ---------- */
+.ab-stat-value { font-size: var(--text-heading-sm); line-height: var(--leading-heading-sm); letter-spacing: var(--tracking-heading-sm); font-weight: var(--font-weight-semibold); font-variant-numeric: tabular-nums; margin: 6px 0 4px; }
+.ab-stat-delta { color: var(--color-dusk); font-size: var(--text-caption); }
+
+/* ---------- Voltage callout: one per page ---------- */
+.ab-callout { background: var(--surface-pop); color: var(--color-abyss); border-radius: var(--radius-cards); padding: 28px; box-shadow: var(--shadow-xl); min-width: 0; }
+.ab-callout .ab-label { color: var(--color-abyss); opacity: 0.7; }
+.ab-callout-value { white-space: nowrap; font-size: clamp(28px, 3.2vw, 48px); line-height: 0.95; letter-spacing: -2.5px; font-weight: var(--font-weight-bold); font-variant-numeric: tabular-nums; margin: 10px 0; }
+.ab-callout p { margin: 0; font-size: var(--text-body-sm); }
+
+/* ---------- Buttons ---------- */
+.ab-btn { border: 0; border-radius: var(--radius-full); font-weight: var(--font-weight-semibold); cursor: pointer; font-family: var(--font-sans); transition: box-shadow 120ms, border-color 120ms, opacity 120ms; }
+.ab-btn:disabled { opacity: 0.5; cursor: default; }
+.ab-btn[data-variant='filled'] { background: var(--color-midnight-navy); color: var(--color-pure-white); box-shadow: var(--shadow-sm); padding: 12px 16px; font-size: var(--text-body-sm); }
+.ab-btn[data-variant='filled']:hover:not(:disabled) { box-shadow: var(--shadow-md); }
+.ab-btn[data-variant='ghost'] { background: transparent; border: 1.5px solid var(--color-cornflower-steel); color: var(--color-cornflower-steel); padding: 10px 14px; font-size: var(--text-body-sm); }
+.ab-btn[data-variant='ghost']:hover:not(:disabled) { background: var(--color-fog-white); }
+.ab-btn[data-variant='chip'] { border: 1.5px solid var(--color-hyacinth); background: var(--color-pure-white); color: var(--color-midnight-navy); padding: 7px 12px; font-size: var(--text-caption); font-weight: var(--font-weight-regular); text-align: left; }
+.ab-btn[data-variant='chip']:hover:not(:disabled) { border-color: var(--color-electric-blue); }
+.ab-btn[data-variant='link'] { background: none; color: var(--color-cornflower-steel); font-size: var(--text-caption); padding: 0; border-radius: 4px; }
+.ab-btn[data-variant='link']:hover:not(:disabled) { color: var(--color-midnight-navy); text-decoration: underline; }
+.ab-btn[data-size='sm'][data-variant='filled'], .ab-btn[data-size='sm'][data-variant='ghost'] { padding: 6px 12px; font-size: var(--text-caption); }
+
+/* ---------- Segmented control (toggle group) and tabs share one pill track ---------- */
+.ab-seg, .ab-tabs-list { display: inline-flex; background: var(--color-fog-white); border-radius: var(--radius-full); padding: 3px; gap: 2px; flex-wrap: wrap; }
+.ab-seg-item, .ab-tab { border: 0; background: transparent; border-radius: var(--radius-full); padding: 6px 12px; font-weight: var(--font-weight-semibold); font-size: var(--text-caption); cursor: pointer; color: var(--color-dusk); font-variant-numeric: tabular-nums; font-family: var(--font-sans); }
+.ab-seg-item:hover:not([data-state='on']):not(:disabled), .ab-tab:hover:not([data-state='active']) { color: var(--color-midnight-navy); }
+.ab-seg-item[data-state='on'] { background: var(--color-midnight-navy); color: var(--color-pure-white); }
+.ab-seg-item:disabled { opacity: 0.45; cursor: default; }
+.ab-tab[data-state='active'] { background: var(--color-pure-white); color: var(--color-midnight-navy); box-shadow: var(--shadow-sm); }
+.ab-tabs-list[data-size='sm'] .ab-tab { padding: 4px 10px; font-size: 12px; }
+.ab-tabs-content { margin-top: var(--spacing-16); }
+.ab-tabs-content:focus-visible { outline: 2px solid var(--color-cornflower-steel); outline-offset: 4px; border-radius: 4px; }
+
+/* ---------- Field wrapper (label + value + control) ---------- */
+.ab-field { margin-bottom: 22px; }
+.ab-field-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--spacing-8); gap: 8px; }
+.ab-field-value { font-weight: var(--font-weight-semibold); font-variant-numeric: tabular-nums; }
+
+/* ---------- Slider: pill track, Electric Blue range, Navy thumb ---------- */
+.ab-slider { position: relative; display: flex; align-items: center; width: 100%; height: 20px; touch-action: none; user-select: none; }
+.ab-slider[data-disabled] { opacity: 0.5; }
+.ab-slider-track { position: relative; flex-grow: 1; height: 6px; border-radius: var(--radius-full); background: var(--color-mist-gray); overflow: hidden; }
+.ab-slider-range { position: absolute; height: 100%; background: var(--color-electric-blue); border-radius: var(--radius-full); }
+.ab-slider-thumb { display: block; width: 20px; height: 20px; border-radius: 50%; background: var(--color-midnight-navy); border: 3px solid var(--color-pure-white); box-shadow: var(--shadow-sm); cursor: grab; }
+.ab-slider-thumb:active { cursor: grabbing; }
+
+/* ---------- Nav pill ---------- */
+.ab-nav-wrap { position: sticky; top: 16px; z-index: 10; display: flex; justify-content: center; padding: 16px 24px 0; }
+.ab-nav { display: flex; align-items: center; gap: 4px; background: var(--color-fog-white); border-radius: var(--radius-nav); box-shadow: var(--shadow-md); padding: 6px 6px 6px 18px; flex-wrap: wrap; }
+.ab-nav-brand { font-weight: var(--font-weight-bold); letter-spacing: -0.5px; margin-right: 12px; color: var(--color-midnight-navy); }
+.ab-nav-link { text-decoration: none; color: var(--color-midnight-navy); font-weight: var(--font-weight-medium); font-size: 15px; padding: 8px 14px; border-radius: var(--radius-full); }
+.ab-nav-link:hover { background: var(--color-pure-white); }
+.ab-nav-link[aria-current='page'] { background: var(--color-pure-white); box-shadow: var(--shadow-sm); font-weight: var(--font-weight-semibold); }
+/* Electric Blue text on white is 2.9:1, so the active link keeps Navy text and carries the accent as a dot. */
+.ab-nav-link[aria-current='page']::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--color-electric-blue); margin-right: 8px; vertical-align: 2px; }
+
+/* ---------- Prompt input (Ask box) ---------- */
+.ab-prompt { display: flex; gap: var(--spacing-8); background: var(--color-pure-white); border-radius: var(--radius-full); box-shadow: var(--shadow-xl); padding: 8px 8px 8px 24px; }
+.ab-prompt:focus-within { box-shadow: var(--shadow-xl), 0 0 0 2px var(--color-electric-blue); }
+.ab-prompt input { flex: 1; border: 0; outline: none; font-size: var(--text-body); background: transparent; min-width: 0; color: var(--color-midnight-navy); }
+.ab-prompt input::placeholder { color: var(--text-label-color); }
+
+/* ---------- Text helpers ---------- */
+.ab-note { color: var(--color-dusk); font-size: var(--text-caption); }
+.ab-note[data-tone='error'] { color: var(--chart-loss); font-weight: var(--font-weight-semibold); }
+.ab-answer { font-size: var(--text-subheading); line-height: 1.35; letter-spacing: -0.5px; font-weight: var(--font-weight-semibold); margin: 0 0 12px; }
+.ab-code { background: var(--color-fog-white); border-radius: 8px; padding: 14px; font-size: 12.5px; overflow-x: auto; white-space: pre-wrap; margin: 8px 0 0; color: var(--color-midnight-navy); }
+.ab-loading { color: var(--text-label-color); padding: 40px 0; text-align: center; }
+.ab-divider { border: 0; border-top: 1px solid var(--color-mist-gray); margin: 8px 0 20px; }
+
+/* ---------- Data table ---------- */
+.ab-table-scroll { overflow: auto; }
+.ab-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: var(--text-caption); color: var(--color-midnight-navy); }
+.ab-table caption { text-align: left; }
+.ab-table th { text-align: left; font-size: var(--text-tag); text-transform: uppercase; letter-spacing: var(--tracking-tag); color: var(--text-label-color); font-weight: var(--font-weight-semibold); padding: 8px 10px 8px 0; border-bottom: 1px solid var(--color-silver-lining); position: sticky; top: 0; background: var(--surface-card); }
+.ab-table td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--color-mist-gray); }
+.ab-table [data-num] { text-align: right; }
+.ab-table tbody tr:hover td { background: color-mix(in srgb, var(--color-fog-white) 70%, transparent); }
+
+/* ---------- Charts ---------- */
+.ab-chart { position: relative; width: 100%; }
+.ab-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ab-chart text { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+.ab-axis-label { fill: var(--chart-label); font-size: 13px; }
+.ab-direct-label { fill: var(--color-midnight-navy); font-size: 13px; font-weight: var(--font-weight-semibold); }
+.ab-muted-label { fill: var(--color-dusk); font-size: 12px; }
+.ab-tooltip { position: absolute; pointer-events: none; background: var(--color-midnight-navy); color: var(--color-pure-white); border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.4; box-shadow: var(--shadow-md); white-space: nowrap; transform: translate(-50%, calc(-100% - 12px)); z-index: 5; font-variant-numeric: tabular-nums; }
+.ab-tooltip b { font-weight: var(--font-weight-semibold); }
+.ab-legend { display: flex; gap: var(--spacing-16); flex-wrap: wrap; font-size: 13px; color: var(--color-dusk); margin: 0 0 8px; }
+.ab-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.ab-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+.ab-chart-empty { color: var(--text-label-color); font-size: var(--text-caption); padding: 32px 0; text-align: center; }
